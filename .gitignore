@@ -55,3 +55,6 @@ CODE_VERIFICATION.md
 # not surface in similarity screening. Figures are retained.
 paper/*.tex
 *.tex
+
+# cached test-set predictions (large, regenerable)
+runs/test_predictions_*.npz
