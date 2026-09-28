@@ -38,12 +38,12 @@ from quant_ops import QuantLinear  # noqa: E402
 OUT = "figures"
 COL1, COL2 = 3.5, 7.16
 
-INK, INK2, MUTED, GRID = "#0b0b0b", "#52514e", "#8a8984", "#e2e1dc"
+INK, INK2, MUTED, GRID = "#000000", "#000000", "#777777", "#bfbfbf"
 
 # Categorical palette, slots 1-8 in fixed order (validated: adjacent CVD
 # dE >= 9.1, normal-vision dE >= 19.6 on the light surface).
-SLOT = ["#2a78d6", "#eb6834", "#1baf7a", "#eda100",
-        "#e87ba4", "#008300", "#4a3aa7", "#e34948"]
+SLOT = ["#D55E00", "#0072B2", "#009E73", "#E69F00",
+        "#56B4E9", "#CC79A7", "#F0E442", "#56B4E9"]
 
 MODELS = {  # key: (label, colour, marker, dash)
     "BNN-MATCHED": ("BNN-FL (proposed)", SLOT[0], "o", "-"),
@@ -54,9 +54,9 @@ MODELS = {  # key: (label, colour, marker, dash)
     "MLP-INT8": ("MLP-INT8", SLOT[5], "v", (0, (1, 1))),
     "BiPruneFL-Repro": ("BiPruneFL-Repro", SLOT[6], "h", "-"),
     "BNN-INT8IO-MATCHED": ("BNN-INT8IO (matched)", SLOT[7], "X", "-"),
-    # ablation variants: steps of the same blue family as BNN-FL
-    "BNN": ("BNN-FL (extra layer)", "#184f95", "s", "--"),
-    "BNN-FULL": ("BNN-FL (fully binarized)", "#86b6ef", "^", ":"),
+    # ablation variants: darker and grey versions of the BNN-FL colour
+    "BNN": ("BNN-FL (extra layer)", "#8B4000", "s", "--"),
+    "BNN-FULL": ("BNN-FL (fully binarized)", "#999999", "^", ":"),
 }
 ORDER = ["BNN-MATCHED", "MLP", "LSTM", "CNN", "BNN-INT8IO", "MLP-INT8"]
 
@@ -67,18 +67,18 @@ def short(key):
 
 plt.rcParams.update({
     "font.family": "sans-serif",
-    "font.sans-serif": ["Arial", "DejaVu Sans"],
+    "font.sans-serif": ["DejaVu Sans", "Arial"],
     "font.size": 7.5, "axes.labelsize": 7.5, "axes.titlesize": 8,
     "xtick.labelsize": 6.8, "ytick.labelsize": 6.8, "legend.fontsize": 6.6,
     "text.color": INK, "axes.labelcolor": INK, "axes.titlecolor": INK,
     "xtick.color": INK2, "ytick.color": INK2,
-    "axes.edgecolor": INK2, "axes.linewidth": 0.6,
-    "axes.spines.top": False, "axes.spines.right": False,
+    "axes.edgecolor": "black", "axes.linewidth": 0.8,
+    "axes.spines.top": True, "axes.spines.right": True,
     "axes.grid": True, "axes.axisbelow": True,
-    "grid.color": GRID, "grid.linewidth": 0.5, "grid.linestyle": "-",
-    "xtick.major.width": 0.6, "ytick.major.width": 0.6,
+    "grid.color": GRID, "grid.linewidth": 0.5, "grid.linestyle": "--", "grid.alpha": 0.6,
+    "xtick.major.width": 0.8, "ytick.major.width": 0.8,
     "xtick.major.size": 2.5, "ytick.major.size": 2.5,
-    "legend.frameon": False, "legend.handlelength": 2.4,
+    "legend.frameon": True, "legend.edgecolor": "black", "legend.framealpha": 1.0, "legend.fancybox": True, "legend.handlelength": 2.4,
     "lines.linewidth": 1.3, "lines.markersize": 3.6,
     "figure.dpi": 300, "savefig.bbox": "tight", "savefig.pad_inches": 0.02,
     "pdf.fonttype": 42, "ps.fonttype": 42,
@@ -95,16 +95,16 @@ def save(fig, name):
 def line(ax, x, y, key, label=None, dash=None, marker=None, every=4, **kw):
     lab, c, m, ls = MODELS[key]
     mk = marker or m
-    ring = c if mk in ("x", "+") else "white"   # open markers need their own colour
+    ring = c if mk in ("x", "+") else "black"   # open markers need their own colour
     ax.plot(x, y, color=c, linestyle=dash or ls, marker=mk,
             markevery=every, markeredgecolor=ring,
-            markeredgewidth=0.9 if mk in ("x", "+") else 0.5,
+            markeredgewidth=0.9 if mk in ("x", "+") else 0.4,
             label=label or lab, **kw)
 
 
 def bars(ax, xs, heights, colors, **kw):
-    return ax.bar(xs, heights, color=colors, edgecolor="white",
-                  linewidth=0.8, width=kw.pop("width", 0.72), **kw)
+    return ax.bar(xs, heights, color=colors, edgecolor="black",
+                  linewidth=0.45, width=kw.pop("width", 0.72), **kw)
 
 
 def label_bars(ax, rects, fmt, pad_frac=0.012):
@@ -165,7 +165,7 @@ def fig_convergence():
     axes[1].set_yscale("log")
     for ax, t in zip(axes, ("(a) Accuracy", "(b) Loss")):
         ax.set_xlabel("Communication round")
-        ax.set_title(t, loc="left")
+        ax.set_title(t)
         ax.set_xlim(0, 46)
     h, l = axes[0].get_legend_handles_labels()
     fig.legend(h, l, loc="lower center", ncol=6, bbox_to_anchor=(0.5, -0.02))
@@ -189,10 +189,11 @@ def fig_perclass(P, names):
     fig, ax = plt.subplots(figsize=(COL2, 2.9))
     x = np.arange(len(names))
     w = 0.4
-    ax.bar(x - w / 2, f1m, w, color=MODELS["MLP"][1], edgecolor="white",
-           linewidth=0.5, label="MLP-FL")
+    ax.bar(x - w / 2, f1m, w, color=MODELS["MLP"][1], edgecolor="black",
+           linewidth=0.3, label="MLP-FL")
     ax.bar(x + w / 2, f1b, w, color=MODELS["BNN-MATCHED"][1],
-           edgecolor="white", linewidth=0.5, label="BNN-FL (proposed)")
+           edgecolor="black", linewidth=0.3, hatch="///",
+           label="BNN-FL (proposed)")
     ax.set_xticks(x)
     ax.set_xticklabels([_short_class(n) for n in names], rotation=55,
                        ha="right", fontsize=6, rotation_mode="anchor")
@@ -215,7 +216,7 @@ def fig_roc(P, k):
         lab, c, _, ls = MODELS[key]
         ax.plot(fpr, tpr, color=c, linestyle=ls,
                 label=f"{lab.replace(' (proposed)', '')} (AUC {auc(fpr, tpr):.4f})")
-    ax.plot([0, 1], [0, 1], color=MUTED, linewidth=0.7, linestyle=":")
+    ax.plot([0, 1], [0, 1], color="black", alpha=0.4, linewidth=0.8, linestyle="--")
     ax.set_xlabel("False positive rate")
     ax.set_ylabel("True positive rate")
     ax.set_xlim(0, 1)
@@ -231,9 +232,9 @@ def fig_roc(P, k):
     ins.set_yticks([0.95, 0.975, 1.0])
     ins.tick_params(labelsize=5.6)
     ins.set_title("zoom: top-left corner", fontsize=6, pad=2, color=INK2)
-    for s in ins.spines.values():
-        s.set_visible(True)
-        s.set_color(MUTED)
+    for sp in ins.spines.values():
+        sp.set_visible(True)
+        sp.set_color("black")
     fig.tight_layout()
     save(fig, "fig_roc")
 
@@ -248,7 +249,7 @@ def fig_misclass(P, names, top=10):
     fig, ax = plt.subplots(figsize=(COL1, 2.85))
     yy = np.arange(len(pairs))
     ax.barh(yy, [t[2] for t in pairs], color=MODELS["BNN-MATCHED"][1],
-            edgecolor="white", linewidth=0.8, height=0.68)
+            edgecolor="black", linewidth=0.45, height=0.68)
     for k, t in enumerate(pairs):
         ax.text(t[2] + 0.015, k, f"{t[2] * 100:.1f}%", va="center",
                 fontsize=6.2, color=INK2)
@@ -258,8 +259,8 @@ def fig_misclass(P, names, top=10):
     ax.invert_yaxis()
     ax.set_xlim(0, 1)
     ax.set_xticks([0, 0.25, 0.5, 0.75, 1.0])
-    ax.set_xticklabels(["0%", "25%", "50%", "75%", "100%"])
-    ax.set_xlabel("Share of the true class predicted as benign")
+    ax.set_xticklabels(["0", "25", "50", "75", "100"])
+    ax.set_xlabel("Predicted as benign (% of true class)")
     ax.grid(axis="y", visible=False)
     fig.tight_layout()
     save(fig, "fig_misclassification")
@@ -276,7 +277,7 @@ def fig_ablation():
     axes[0].set_ylabel("Global test accuracy (%)")
     axes[0].set_ylim(40, 101)
     axes[0].set_xlim(0, 46)
-    axes[0].set_title("(a) Accuracy during training", loc="left")
+    axes[0].set_title("(a) Accuracy during training")
     axes[0].legend(loc="lower right")
     x = np.arange(3)
     r = bars(axes[1], x, [ACC[k] for k in keys], [MODELS[k][1] for k in keys])
@@ -289,7 +290,7 @@ def fig_ablation():
                             fontsize=6.3)
     axes[1].set_ylabel("Best accuracy (%)")
     axes[1].grid(axis="x", visible=False)
-    axes[1].set_title("(b) Best accuracy and model size", loc="left")
+    axes[1].set_title("(b) Best accuracy and model size")
     fig.tight_layout()
     save(fig, "fig_ablation")
 
@@ -308,24 +309,24 @@ def fig_efficiency():
                      f"{v:.1f}" if v < 100 else f"{v:,.0f}", ha="center",
                      va="bottom", fontsize=5.8, color=INK2)
     axes[0].set_ylabel("Energy per inference (nJ, log scale)")
-    axes[0].set_title("(a) Estimated energy", loc="left")
+    axes[0].set_title("(a) Estimated energy")
     d = np.array([DOWN[k] for k in ORDER])
     u = np.array([UP[k] for k in ORDER])
     bars(axes[1], x, d, cols)
-    bars(axes[1], x, u, cols, bottom=d, alpha=0.38)
+    bars(axes[1], x, u, cols, bottom=d, alpha=0.45, hatch="///")
     axes[1].set_ylim(0, 760)
     for k in range(len(x)):
         axes[1].text(x[k], d[k] + u[k] + 12, f"{d[k] + u[k]:.0f}",
                      ha="center", va="bottom", fontsize=5.8, color=INK2)
     axes[1].set_ylabel("Traffic per client per round (KB)")
-    axes[1].set_title("(b) Round trip", loc="left")
-    axes[1].legend(handles=[Patch(color=MUTED, label="Downlink"),
-                            Patch(color=MUTED, alpha=0.38, label="Uplink")],
+    axes[1].set_title("(b) Round trip")
+    axes[1].legend(handles=[Patch(facecolor="#777777", edgecolor="black", label="Downlink"),
+                            Patch(facecolor="#dddddd", edgecolor="black", hatch="///", label="Uplink")],
                    loc="upper left")
     p = [PARAMS[k] for k in ORDER]
     bars(axes[2], x, np.array(p) / 1000, cols)
     axes[2].set_ylabel("Trainable parameters (thousands)")
-    axes[2].set_title("(c) Model size", loc="left")
+    axes[2].set_title("(c) Model size")
     for ax in axes:
         ax.set_xticks(x)
         ax.set_xticklabels(names, rotation=40, ha="right", fontsize=6.2,
@@ -343,7 +344,7 @@ def fig_pareto():
     for key in ORDER:
         lab, c, m, _ = MODELS[key]
         ax.scatter(DOWN[key], ACC[key], s=46, color=c, marker=m,
-                   edgecolor="white", linewidth=0.8, zorder=3)
+                   edgecolor="black", linewidth=0.45, zorder=3)
         dx, dy, ha = offs[key]
         ax.annotate(short(key), (DOWN[key], ACC[key]), xytext=(dx, dy),
                     textcoords="offset points", ha=ha, fontsize=6.4, color=INK)
@@ -368,22 +369,24 @@ def fig_precision_tiers():
     fig, axes = plt.subplots(1, 2, figsize=(COL2, 2.4))
     r = bars(axes[0], x, [ACC[k] for k in keys], cols)
     axes[0].set_ylim(0, 110)
+    r[-1].set_hatch("...")   # matched variant: same colour family, dotted fill
     label_bars(axes[0], r, lambda v: f"{v:.2f}")
     axes[0].set_ylabel("Best accuracy (%)")
-    axes[0].set_title("(a) Detection accuracy", loc="left")
+    axes[0].set_title("(a) Detection accuracy")
     d = np.array([DOWN[k] for k in keys])
     u = np.array([UP[k] for k in keys])
-    bars(axes[1], x, d, cols)
-    bars(axes[1], x, u, cols, bottom=d, alpha=0.38)
-    axes[1].set_ylim(0, 165)
+    rd = bars(axes[1], x, d, cols)
+    rd[-1].set_hatch("...")
+    bars(axes[1], x, u, cols, bottom=d, alpha=0.45, hatch="///")
+    axes[1].set_ylim(0, 185)
     for k in range(len(x)):
         axes[1].text(x[k], d[k] + u[k] + 2.5, f"{d[k] + u[k]:.1f}",
                      ha="center", va="bottom", fontsize=6.2, color=INK2)
     axes[1].set_ylabel("Traffic per client per round (KB)")
-    axes[1].set_title("(b) Round trip", loc="left")
-    axes[1].legend(handles=[Patch(color=MUTED, label="Downlink"),
-                            Patch(color=MUTED, alpha=0.38, label="Uplink")],
-                   loc="upper right")
+    axes[1].set_title("(b) Round trip")
+    axes[1].legend(handles=[Patch(facecolor="#777777", edgecolor="black", label="Downlink"),
+                            Patch(facecolor="#dddddd", edgecolor="black", hatch="///", label="Uplink")],
+                   loc="upper left", ncol=2)
     for ax in axes:
         ax.set_xticks(x)
         ax.set_xticklabels(ticks, fontsize=6.3)
@@ -402,12 +405,12 @@ def fig_bipru():
     axes[0].set_ylim(0, 112)
     label_bars(axes[0], r, lambda v: f"{v:.2f}")
     axes[0].set_ylabel("Best accuracy (%)")
-    axes[0].set_title("(a) Accuracy", loc="left")
+    axes[0].set_title("(a) Accuracy")
     r = bars(axes[1], x, [DOWN[k] for k in keys], cols)
     axes[1].set_ylim(0, 75)
     label_bars(axes[1], r, lambda v: f"{v:.1f}")
     axes[1].set_ylabel("Downlink per round (KB)")
-    axes[1].set_title("(b) Downlink", loc="left")
+    axes[1].set_title("(b) Downlink")
     for ax in axes:
         ax.set_xticks(x)
         ax.set_xticklabels(ticks, fontsize=5.8)
@@ -453,7 +456,7 @@ def fig_agg():
     for tag, lab, c, ls, m in runs:
         a = [h["accuracy"] * 100 for h in hist_full(f"BNN-MATCHED_seed42{tag}")]
         ax.plot(np.arange(1, len(a) + 1), a, color=c, linestyle=ls, marker=m,
-                markevery=4, markeredgecolor="white", markeredgewidth=0.5,
+                markevery=4, markeredgecolor="black", markeredgewidth=0.4,
                 label=lab)
     ax.set_xlabel("Communication round")
     ax.set_ylabel("Global test accuracy (%)")
