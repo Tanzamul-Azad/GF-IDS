@@ -43,3 +43,9 @@ CODE_VERIFICATION.md
 # not surface in similarity screening. Figures are retained.
 paper/*.tex
 *.tex
+
+# Paper material stays out of the public repository while the paper is under review
+# (kept locally): progress notes, manuscript figures and plots.
+docs/
+paper/
+figures/
