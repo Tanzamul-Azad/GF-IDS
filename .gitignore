@@ -58,3 +58,9 @@ paper/*.tex
 
 # cached test-set predictions (large, regenerable)
 runs/test_predictions_*.npz
+
+# Paper material stays out of the public repository while the paper is under review
+# (kept locally): progress notes, manuscript figures and plots.
+docs/
+paper/
+figures/
