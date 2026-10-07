@@ -64,3 +64,8 @@ runs/test_predictions_*.npz
 docs/
 paper/
 figures/
+
+# v2 run bookkeeping: lock files, resume backups and dataset-derived row masks
+runs_v2/**/*.lock
+runs_v2/**/*.bak
+data_v2/**/*.npz

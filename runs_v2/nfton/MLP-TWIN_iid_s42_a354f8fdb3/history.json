@@ -1,0 +1,812 @@
+[
+ {
+  "round": 1,
+  "lr": 0.0005,
+  "down_bytes": 60584,
+  "up_bytes_per_client": [
+   60584,
+   60584,
+   60584,
+   60584,
+   60584
+  ],
+  "sign_flip_rate": null,
+  "seconds": 11.23,
+  "val_accuracy": 0.8087120341864633,
+  "val_macro_f1": 0.5204050652871695,
+  "val_loss": 0.558713288331401,
+  "val_benign_far": 0.1583884747466287
+ },
+ {
+  "round": 2,
+  "lr": 0.0005,
+  "down_bytes": 60584,
+  "up_bytes_per_client": [
+   60584,
+   60584,
+   60584,
+   60584,
+   60584
+  ],
+  "sign_flip_rate": null,
+  "seconds": 10.15,
+  "val_accuracy": 0.870468225887975,
+  "val_macro_f1": 0.6352350379738086,
+  "val_loss": 0.42084779336802725,
+  "val_benign_far": 0.10582963397269453
+ },
+ {
+  "round": 3,
+  "lr": 0.0005,
+  "down_bytes": 60584,
+  "up_bytes_per_client": [
+   60584,
+   60584,
+   60584,
+   60584,
+   60584
+  ],
+  "sign_flip_rate": null,
+  "seconds": 10.11,
+  "val_accuracy": 0.8877912052566282,
+  "val_macro_f1": 0.6522629055679997,
+  "val_loss": 0.38382898172089674,
+  "val_benign_far": 0.10046905100929726
+ },
+ {
+  "round": 4,
+  "lr": 0.0005,
+  "down_bytes": 60584,
+  "up_bytes_per_client": [
+   60584,
+   60584,
+   60584,
+   60584,
+   60584
+  ],
+  "sign_flip_rate": null,
+  "seconds": 10.42,
+  "val_accuracy": 0.8906952166521159,
+  "val_macro_f1": 0.6534851733328929,
+  "val_loss": 0.34919508303679214,
+  "val_benign_far": 0.09854259150682637
+ },
+ {
+  "round": 5,
+  "lr": 0.0005,
+  "down_bytes": 60584,
+  "up_bytes_per_client": [
+   60584,
+   60584,
+   60584,
+   60584,
+   60584
+  ],
+  "sign_flip_rate": null,
+  "seconds": 10.32,
+  "val_accuracy": 0.8692459679272159,
+  "val_macro_f1": 0.6449618217327064,
+  "val_loss": 0.3567556325063621,
+  "val_benign_far": 0.09108803082335204
+ },
+ {
+  "round": 6,
+  "lr": 0.0005,
+  "down_bytes": 60584,
+  "up_bytes_per_client": [
+   60584,
+   60584,
+   60584,
+   60584,
+   60584
+  ],
+  "sign_flip_rate": null,
+  "seconds": 10.13,
+  "val_accuracy": 0.8989845150025272,
+  "val_macro_f1": 0.6740435393925318,
+  "val_loss": 0.3227342486137777,
+  "val_benign_far": 0.09251193567300443
+ },
+ {
+  "round": 7,
+  "lr": 0.0005,
+  "down_bytes": 60584,
+  "up_bytes_per_client": [
+   60584,
+   60584,
+   60584,
+   60584,
+   60584
+  ],
+  "sign_flip_rate": null,
+  "seconds": 10.98,
+  "val_accuracy": 0.9031383540872122,
+  "val_macro_f1": 0.6655938073059531,
+  "val_loss": 0.30523704830345705,
+  "val_benign_far": 0.09163246503057207
+ },
+ {
+  "round": 8,
+  "lr": 0.0005,
+  "down_bytes": 60584,
+  "up_bytes_per_client": [
+   60584,
+   60584,
+   60584,
+   60584,
+   60584
+  ],
+  "sign_flip_rate": null,
+  "seconds": 10.67,
+  "val_accuracy": 0.9044708909617241,
+  "val_macro_f1": 0.668945034795178,
+  "val_loss": 0.29278603335960174,
+  "val_benign_far": 0.08660691850238714
+ },
+ {
+  "round": 9,
+  "lr": 0.0005,
+  "down_bytes": 60584,
+  "up_bytes_per_client": [
+   60584,
+   60584,
+   60584,
+   60584,
+   60584
+  ],
+  "sign_flip_rate": null,
+  "seconds": 10.14,
+  "val_accuracy": 0.9068143178789689,
+  "val_macro_f1": 0.6664529252697586,
+  "val_loss": 0.2861893587250901,
+  "val_benign_far": 0.0851411340983332
+ },
+ {
+  "round": 10,
+  "lr": 0.0005,
+  "down_bytes": 60584,
+  "up_bytes_per_client": [
+   60584,
+   60584,
+   60584,
+   60584,
+   60584
+  ],
+  "sign_flip_rate": null,
+  "seconds": 10.43,
+  "val_accuracy": 0.9064375315903138,
+  "val_macro_f1": 0.6767881979348036,
+  "val_loss": 0.2859523430481031,
+  "val_benign_far": 0.08765390736242566
+ },
+ {
+  "round": 11,
+  "lr": 0.0005,
+  "down_bytes": 60584,
+  "up_bytes_per_client": [
+   60584,
+   60584,
+   60584,
+   60584,
+   60584
+  ],
+  "sign_flip_rate": null,
+  "seconds": 10.33,
+  "val_accuracy": 0.9060239856637412,
+  "val_macro_f1": 0.6640536154093151,
+  "val_loss": 0.28758505724816563,
+  "val_benign_far": 0.09054359661613201
+ },
+ {
+  "round": 12,
+  "lr": 0.0005,
+  "down_bytes": 60584,
+  "up_bytes_per_client": [
+   60584,
+   60584,
+   60584,
+   60584,
+   60584
+  ],
+  "sign_flip_rate": null,
+  "seconds": 10.27,
+  "val_accuracy": 0.9077608785553463,
+  "val_macro_f1": 0.6801462157750828,
+  "val_loss": 0.28037199701822696,
+  "val_benign_far": 0.08551805008794706
+ },
+ {
+  "round": 13,
+  "lr": 0.0005,
+  "down_bytes": 60584,
+  "up_bytes_per_client": [
+   60584,
+   60584,
+   60584,
+   60584,
+   60584
+  ],
+  "sign_flip_rate": null,
+  "seconds": 10.2,
+  "val_accuracy": 0.9078803473785784,
+  "val_macro_f1": 0.6877621861777697,
+  "val_loss": 0.2811094467152306,
+  "val_benign_far": 0.08639752073037943
+ },
+ {
+  "round": 14,
+  "lr": 0.0005,
+  "down_bytes": 60584,
+  "up_bytes_per_client": [
+   60584,
+   60584,
+   60584,
+   60584,
+   60584
+  ],
+  "sign_flip_rate": null,
+  "seconds": 10.26,
+  "val_accuracy": 0.9063364425860405,
+  "val_macro_f1": 0.6798180875817371,
+  "val_loss": 0.28170104048567945,
+  "val_benign_far": 0.08421978390149928
+ },
+ {
+  "round": 15,
+  "lr": 0.0005,
+  "down_bytes": 60584,
+  "up_bytes_per_client": [
+   60584,
+   60584,
+   60584,
+   60584,
+   60584
+  ],
+  "sign_flip_rate": null,
+  "seconds": 11.07,
+  "val_accuracy": 0.9095345310848688,
+  "val_macro_f1": 0.693990141812497,
+  "val_loss": 0.2748646853612428,
+  "val_benign_far": 0.08354971103107463
+ },
+ {
+  "round": 16,
+  "lr": 0.0005,
+  "down_bytes": 60584,
+  "up_bytes_per_client": [
+   60584,
+   60584,
+   60584,
+   60584,
+   60584
+  ],
+  "sign_flip_rate": null,
+  "seconds": 10.7,
+  "val_accuracy": 0.9074668014520056,
+  "val_macro_f1": 0.6815726412950875,
+  "val_loss": 0.28544796331344113,
+  "val_benign_far": 0.08472233855431778
+ },
+ {
+  "round": 17,
+  "lr": 0.0005,
+  "down_bytes": 60584,
+  "up_bytes_per_client": [
+   60584,
+   60584,
+   60584,
+   60584,
+   60584
+  ],
+  "sign_flip_rate": null,
+  "seconds": 10.32,
+  "val_accuracy": 0.9094426319900749,
+  "val_macro_f1": 0.6884589179403794,
+  "val_loss": 0.2812567822732059,
+  "val_benign_far": 0.0853505318703409
+ },
+ {
+  "round": 18,
+  "lr": 0.0005,
+  "down_bytes": 60584,
+  "up_bytes_per_client": [
+   60584,
+   60584,
+   60584,
+   60584,
+   60584
+  ],
+  "sign_flip_rate": null,
+  "seconds": 10.16,
+  "val_accuracy": 0.9082847033956716,
+  "val_macro_f1": 0.6904869683408467,
+  "val_loss": 0.2745262183542391,
+  "val_benign_far": 0.08258648127983918
+ },
+ {
+  "round": 19,
+  "lr": 0.0005,
+  "down_bytes": 60584,
+  "up_bytes_per_client": [
+   60584,
+   60584,
+   60584,
+   60584,
+   60584
+  ],
+  "sign_flip_rate": null,
+  "seconds": 10.22,
+  "val_accuracy": 0.9076230299131554,
+  "val_macro_f1": 0.6813460275626597,
+  "val_loss": 0.27432453523541955,
+  "val_benign_far": 0.08505737498953012
+ },
+ {
+  "round": 20,
+  "lr": 0.0005,
+  "down_bytes": 60584,
+  "up_bytes_per_client": [
+   60584,
+   60584,
+   60584,
+   60584,
+   60584
+  ],
+  "sign_flip_rate": null,
+  "seconds": 10.18,
+  "val_accuracy": 0.9100399761062353,
+  "val_macro_f1": 0.6845166250020308,
+  "val_loss": 0.2734941324868119,
+  "val_benign_far": 0.08254460172543764
+ },
+ {
+  "round": 21,
+  "lr": 0.0005,
+  "down_bytes": 60584,
+  "up_bytes_per_client": [
+   60584,
+   60584,
+   60584,
+   60584,
+   60584
+  ],
+  "sign_flip_rate": null,
+  "seconds": 10.0,
+  "val_accuracy": 0.9094885815374718,
+  "val_macro_f1": 0.688289818436899,
+  "val_loss": 0.27171991483141866,
+  "val_benign_far": 0.08430354301030236
+ },
+ {
+  "round": 22,
+  "lr": 0.0005,
+  "down_bytes": 60584,
+  "up_bytes_per_client": [
+   60584,
+   60584,
+   60584,
+   60584,
+   60584
+  ],
+  "sign_flip_rate": null,
+  "seconds": 10.95,
+  "val_accuracy": 0.9095896705417451,
+  "val_macro_f1": 0.6879528645418416,
+  "val_loss": 0.26987711756960003,
+  "val_benign_far": 0.08258648127983918
+ },
+ {
+  "round": 23,
+  "lr": 0.0005,
+  "down_bytes": 60584,
+  "up_bytes_per_client": [
+   60584,
+   60584,
+   60584,
+   60584,
+   60584
+  ],
+  "sign_flip_rate": null,
+  "seconds": 10.74,
+  "val_accuracy": 0.9104719018517667,
+  "val_macro_f1": 0.6865300958964343,
+  "val_loss": 0.26814117638228796,
+  "val_benign_far": 0.08262836083424073
+ },
+ {
+  "round": 24,
+  "lr": 0.0005,
+  "down_bytes": 60584,
+  "up_bytes_per_client": [
+   60584,
+   60584,
+   60584,
+   60584,
+   60584
+  ],
+  "sign_flip_rate": null,
+  "seconds": 10.13,
+  "val_accuracy": 0.9108394982309425,
+  "val_macro_f1": 0.6998929044944827,
+  "val_loss": 0.2704716033074028,
+  "val_benign_far": 0.08438730211910546
+ },
+ {
+  "round": 25,
+  "lr": 0.0005,
+  "down_bytes": 60584,
+  "up_bytes_per_client": [
+   60584,
+   60584,
+   60584,
+   60584,
+   60584
+  ],
+  "sign_flip_rate": null,
+  "seconds": 10.17,
+  "val_accuracy": 0.9104535220328079,
+  "val_macro_f1": 0.6932437072693846,
+  "val_loss": 0.26867737111671497,
+  "val_benign_far": 0.0825027221710361
+ },
+ {
+  "round": 26,
+  "lr": 0.0005,
+  "down_bytes": 60584,
+  "up_bytes_per_client": [
+   60584,
+   60584,
+   60584,
+   60584,
+   60584
+  ],
+  "sign_flip_rate": null,
+  "seconds": 10.06,
+  "val_accuracy": 0.9106924596792721,
+  "val_macro_f1": 0.695730841471932,
+  "val_loss": 0.2684446245285374,
+  "val_benign_far": 0.08162325152860374
+ },
+ {
+  "round": 27,
+  "lr": 0.0005,
+  "down_bytes": 60584,
+  "up_bytes_per_client": [
+   60584,
+   60584,
+   60584,
+   60584,
+   60584
+  ],
+  "sign_flip_rate": null,
+  "seconds": 10.25,
+  "val_accuracy": 0.9109773468731333,
+  "val_macro_f1": 0.6932038300645258,
+  "val_loss": 0.2694750484616442,
+  "val_benign_far": 0.08346595192227155
+ },
+ {
+  "round": 28,
+  "lr": 0.0005,
+  "down_bytes": 60584,
+  "up_bytes_per_client": [
+   60584,
+   60584,
+   60584,
+   60584,
+   60584
+  ],
+  "sign_flip_rate": null,
+  "seconds": 10.33,
+  "val_accuracy": 0.911298993704912,
+  "val_macro_f1": 0.6971013981866283,
+  "val_loss": 0.26735890045113647,
+  "val_benign_far": 0.08212580618142223
+ },
+ {
+  "round": 29,
+  "lr": 0.0005,
+  "down_bytes": 60584,
+  "up_bytes_per_client": [
+   60584,
+   60584,
+   60584,
+   60584,
+   60584
+  ],
+  "sign_flip_rate": null,
+  "seconds": 10.28,
+  "val_accuracy": 0.9099756467398796,
+  "val_macro_f1": 0.6927328501012848,
+  "val_loss": 0.27091472947339507,
+  "val_benign_far": 0.08338219281346847
+ },
+ {
+  "round": 30,
+  "lr": 0.0005,
+  "down_bytes": 60584,
+  "up_bytes_per_client": [
+   60584,
+   60584,
+   60584,
+   60584,
+   60584
+  ],
+  "sign_flip_rate": null,
+  "seconds": 11.06,
+  "val_accuracy": 0.911510361622938,
+  "val_macro_f1": 0.693333850364805,
+  "val_loss": 0.27264882721801464,
+  "val_benign_far": 0.08233520395342994
+ },
+ {
+  "round": 31,
+  "lr": 0.0005,
+  "down_bytes": 60584,
+  "up_bytes_per_client": [
+   60584,
+   60584,
+   60584,
+   60584,
+   60584
+  ],
+  "sign_flip_rate": null,
+  "seconds": 10.3,
+  "val_accuracy": 0.9094885815374718,
+  "val_macro_f1": 0.6948904652356893,
+  "val_loss": 0.2708447376115573,
+  "val_benign_far": 0.08417790434709775
+ },
+ {
+  "round": 32,
+  "lr": 0.0005,
+  "down_bytes": 60584,
+  "up_bytes_per_client": [
+   60584,
+   60584,
+   60584,
+   60584,
+   60584
+  ],
+  "sign_flip_rate": null,
+  "seconds": 10.13,
+  "val_accuracy": 0.9112254744290769,
+  "val_macro_f1": 0.6914061378386738,
+  "val_loss": 0.2645646481844715,
+  "val_benign_far": 0.08045062400536059
+ },
+ {
+  "round": 33,
+  "lr": 0.0005,
+  "down_bytes": 60584,
+  "up_bytes_per_client": [
+   60584,
+   60584,
+   60584,
+   60584,
+   60584
+  ],
+  "sign_flip_rate": null,
+  "seconds": 10.1,
+  "val_accuracy": 0.91117952488168,
+  "val_macro_f1": 0.698492879153433,
+  "val_loss": 0.26692160647926494,
+  "val_benign_far": 0.08304715637825613
+ },
+ {
+  "round": 34,
+  "lr": 0.0005,
+  "down_bytes": 60584,
+  "up_bytes_per_client": [
+   60584,
+   60584,
+   60584,
+   60584,
+   60584
+  ],
+  "sign_flip_rate": null,
+  "seconds": 10.39,
+  "val_accuracy": 0.9117401093599228,
+  "val_macro_f1": 0.6970998693288952,
+  "val_loss": 0.26504720280983646,
+  "val_benign_far": 0.0806600217773683
+ },
+ {
+  "round": 35,
+  "lr": 0.0005,
+  "down_bytes": 60584,
+  "up_bytes_per_client": [
+   60584,
+   60584,
+   60584,
+   60584,
+   60584
+  ],
+  "sign_flip_rate": null,
+  "seconds": 10.38,
+  "val_accuracy": 0.9117584891788816,
+  "val_macro_f1": 0.690993447411903,
+  "val_loss": 0.2653951188771157,
+  "val_benign_far": 0.08103693776698216
+ },
+ {
+  "round": 36,
+  "lr": 0.0005,
+  "down_bytes": 60584,
+  "up_bytes_per_client": [
+   60584,
+   60584,
+   60584,
+   60584,
+   60584
+  ],
+  "sign_flip_rate": null,
+  "seconds": 10.13,
+  "val_accuracy": 0.9115379313513762,
+  "val_macro_f1": 0.6920026663117312,
+  "val_loss": 0.265319219560947,
+  "val_benign_far": 0.08216768573582377
+ },
+ {
+  "round": 37,
+  "lr": 0.0005,
+  "down_bytes": 60584,
+  "up_bytes_per_client": [
+   60584,
+   60584,
+   60584,
+   60584,
+   60584
+  ],
+  "sign_flip_rate": null,
+  "seconds": 10.69,
+  "val_accuracy": 0.9114000827091853,
+  "val_macro_f1": 0.690689717053122,
+  "val_loss": 0.2654779657460648,
+  "val_benign_far": 0.0806600217773683
+ },
+ {
+  "round": 38,
+  "lr": 0.0005,
+  "down_bytes": 60584,
+  "up_bytes_per_client": [
+   60584,
+   60584,
+   60584,
+   60584,
+   60584
+  ],
+  "sign_flip_rate": null,
+  "seconds": 10.8,
+  "val_accuracy": 0.9119606671874282,
+  "val_macro_f1": 0.6939607441650435,
+  "val_loss": 0.2639948145391113,
+  "val_benign_far": 0.08162325152860374
+ },
+ {
+  "round": 39,
+  "lr": 0.0005,
+  "down_bytes": 60584,
+  "up_bytes_per_client": [
+   60584,
+   60584,
+   60584,
+   60584,
+   60584
+  ],
+  "sign_flip_rate": null,
+  "seconds": 10.16,
+  "val_accuracy": 0.9112806138859533,
+  "val_macro_f1": 0.6938645428462229,
+  "val_loss": 0.26590378042590346,
+  "val_benign_far": 0.08329843370466539
+ },
+ {
+  "round": 40,
+  "lr": 0.0005,
+  "down_bytes": 60584,
+  "up_bytes_per_client": [
+   60584,
+   60584,
+   60584,
+   60584,
+   60584
+  ],
+  "sign_flip_rate": null,
+  "seconds": 10.21,
+  "val_accuracy": 0.9115655010798144,
+  "val_macro_f1": 0.692100726824129,
+  "val_loss": 0.26498062847341264,
+  "val_benign_far": 0.08145573331099758
+ },
+ {
+  "round": 41,
+  "lr": 0.0005,
+  "down_bytes": 60584,
+  "up_bytes_per_client": [
+   60584,
+   60584,
+   60584,
+   60584,
+   60584
+  ],
+  "sign_flip_rate": null,
+  "seconds": 10.22,
+  "val_accuracy": 0.911344943252309,
+  "val_macro_f1": 0.6916189343679487,
+  "val_loss": 0.2639595226637226,
+  "val_benign_far": 0.08153949241980066
+ },
+ {
+  "round": 42,
+  "lr": 0.0005,
+  "down_bytes": 60584,
+  "up_bytes_per_client": [
+   60584,
+   60584,
+   60584,
+   60584,
+   60584
+  ],
+  "sign_flip_rate": null,
+  "seconds": 10.29,
+  "val_accuracy": 0.9122271745623306,
+  "val_macro_f1": 0.6911848367878971,
+  "val_loss": 0.26365800579752285,
+  "val_benign_far": 0.08329843370466539
+ },
+ {
+  "round": 43,
+  "lr": 0.0005,
+  "down_bytes": 60584,
+  "up_bytes_per_client": [
+   60584,
+   60584,
+   60584,
+   60584,
+   60584
+  ],
+  "sign_flip_rate": null,
+  "seconds": 10.18,
+  "val_accuracy": 0.9126682902173413,
+  "val_macro_f1": 0.6991913767958112,
+  "val_loss": 0.26176969960365465,
+  "val_benign_far": 0.0807856604405729
+ },
+ {
+  "round": 44,
+  "lr": 0.0005,
+  "down_bytes": 60584,
+  "up_bytes_per_client": [
+   60584,
+   60584,
+   60584,
+   60584,
+   60584
+  ],
+  "sign_flip_rate": null,
+  "seconds": 10.11,
+  "val_accuracy": 0.9109130175067776,
+  "val_macro_f1": 0.6906944802327107,
+  "val_loss": 0.27380266969833766,
+  "val_benign_far": 0.08371722924868079
+ },
+ {
+  "round": 45,
+  "lr": 0.0005,
+  "down_bytes": 60584,
+  "up_bytes_per_client": [
+   60584,
+   60584,
+   60584,
+   60584,
+   60584
+  ],
+  "sign_flip_rate": null,
+  "seconds": 11.13,
+  "val_accuracy": 0.9118595781831549,
+  "val_macro_f1": 0.6938211554584623,
+  "val_loss": 0.26261711008807387,
+  "val_benign_far": 0.07919423737331435
+ }
+]

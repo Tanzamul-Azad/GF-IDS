@@ -341,6 +341,60 @@ class BiPruneFLReproModel(nn.Module):
         return self.layer4(x)
 
 
+# ─────────────────────────────────────────────────────────────
+# Controls added for the v2 protocol
+#
+# MLPModel matches BNNMatchedModel's weight shapes but not its layer
+# order: MLPModel normalizes after the 128- and 64-wide ReLU outputs,
+# BNNMatchedModel after the 64- and 32-wide binary layers, and the
+# activations differ. A gap between the two therefore mixes precision
+# with layer design.
+#
+# MLPTwinModel keeps the BNNMatchedModel layout but holds all weights
+# in full precision, and uses Hardtanh (the STE surrogate) where the
+# binary model uses sign. The two differ only in weight and activation
+# precision.
+#
+# BNNFullMatchedModel binarizes the input and output layers of the
+# matched topology too. The v1 full-binary ablation used the larger
+# five-layer network, so its gap mixed topology with I/O precision.
+# ─────────────────────────────────────────────────────────────
+class MLPTwinModel(nn.Module):
+    def __init__(self, input_dim, num_classes):
+        super().__init__()
+        self.input_layer = nn.Linear(input_dim, 128)
+        self.hidden1 = nn.Sequential(
+            nn.Linear(128, 64), nn.BatchNorm1d(64), nn.Hardtanh())
+        self.hidden2 = nn.Sequential(
+            nn.Linear(64, 32), nn.BatchNorm1d(32), nn.Hardtanh())
+        self.output_layer = nn.Linear(32, num_classes)
+
+    def forward(self, x):
+        x = torch.relu(self.input_layer(x))
+        x = self.hidden1(x)
+        x = self.hidden2(x)
+        return self.output_layer(x)
+
+
+class BNNFullMatchedModel(nn.Module):
+    def __init__(self, input_dim, num_classes, binarize_activations=True):
+        super().__init__()
+        act = BinaryActivation if binarize_activations else nn.Hardtanh
+
+        self.input_layer = BinaryLinear(input_dim, 128)
+        self.hidden1 = nn.Sequential(
+            BinaryLinear(128, 64), nn.BatchNorm1d(64), act())
+        self.hidden2 = nn.Sequential(
+            BinaryLinear(64, 32), nn.BatchNorm1d(32), act())
+        self.output_layer = BinaryLinear(32, num_classes)
+
+    def forward(self, x):
+        x = torch.relu(self.input_layer(x))
+        x = self.hidden1(x)
+        x = self.hidden2(x)
+        return self.output_layer(x)
+
+
 MODEL_REGISTRY = {
     "MLP": MLPModel,
     "CNN": CNNModel,
@@ -352,4 +406,6 @@ MODEL_REGISTRY = {
     "BNN-MATCHED": BNNMatchedModel,
     "BNN-INT8IO-MATCHED": BNNInt8IOMatchedModel,
     "BiPruneFL-Repro": BiPruneFLReproModel,
+    "MLP-TWIN": MLPTwinModel,
+    "BNN-FULL-MATCHED": BNNFullMatchedModel,
 }
