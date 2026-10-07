@@ -13,6 +13,10 @@ INPUT_DIM and NUM_CLASSES are set by the preprocessing stage
 import torch
 import torch.nn as nn
 
+from binary_ops import BinaryActivation, BinaryLinear
+from edgepop_ops import EdgePopupLinear
+from quant_ops import QuantLinear
+
 
 # ─────────────────────────────────────────────────────────────
 # Baseline 1 — MLP
@@ -101,23 +105,24 @@ class LSTMModel(nn.Module):
 # loses the scale of the raw features, and a binary last layer
 # distorts the class probabilities.
 # ─────────────────────────────────────────────────────────────
-class BinaryLinear(nn.Linear):
-    def forward(self, x):
-        w_b = torch.sign(self.weight)
-        w_b[w_b == 0] = 1
-        return nn.functional.linear(x, w_b, self.bias)
-
-
+# Weights are binarized through SignSTE, so gradients reach the
+# underlying real-valued weights via the straight-through estimator
+# (see binary_ops.py). With binarize_activations=True the tensor
+# flowing between hidden layers is binarized too, which is what
+# reduces the hidden-layer matrix products to XNOR + popcount.
+# ─────────────────────────────────────────────────────────────
 class BNNModel(nn.Module):
-    def __init__(self, input_dim, num_classes):
+    def __init__(self, input_dim, num_classes, binarize_activations=True):
         super().__init__()
+        act = BinaryActivation if binarize_activations else nn.Hardtanh
+
         self.input_layer = nn.Linear(input_dim, 128)
         self.hidden1 = nn.Sequential(
-            BinaryLinear(128, 128), nn.BatchNorm1d(128), nn.Hardtanh())
+            BinaryLinear(128, 128), nn.BatchNorm1d(128), act())
         self.hidden2 = nn.Sequential(
-            BinaryLinear(128, 64), nn.BatchNorm1d(64), nn.Hardtanh())
+            BinaryLinear(128, 64), nn.BatchNorm1d(64), act())
         self.hidden3 = nn.Sequential(
-            BinaryLinear(64, 32), nn.BatchNorm1d(32), nn.Hardtanh())
+            BinaryLinear(64, 32), nn.BatchNorm1d(32), act())
         self.output_layer = nn.Linear(32, num_classes)
 
     def forward(self, x):
@@ -128,9 +133,279 @@ class BNNModel(nn.Module):
         return self.output_layer(x)
 
 
+# ─────────────────────────────────────────────────────────────
+# Baseline 4 — INT8 quantized MLP
+#
+# Same topology and same training configuration as MLPModel, with
+# every dense layer constrained to an 8 bit grid instead of Float32.
+# This is the baseline that answers "why one bit rather than eight",
+# and it is the strongest competitor to the proposed model on
+# communication cost, since int8 already divides the payload by four
+# while keeping accuracy essentially intact.
+# ─────────────────────────────────────────────────────────────
+class MLPInt8Model(nn.Module):
+    def __init__(self, input_dim, num_classes, bits=8):
+        super().__init__()
+        self.net = nn.Sequential(
+            QuantLinear(input_dim, 128, bits=bits), nn.ReLU(),
+            nn.BatchNorm1d(128),
+            QuantLinear(128, 64, bits=bits), nn.ReLU(),
+            nn.BatchNorm1d(64),
+            QuantLinear(64, 32, bits=bits), nn.ReLU(),
+            QuantLinear(32, num_classes, bits=bits),
+        )
+
+    def forward(self, x):
+        return self.net(x)
+
+
+# ─────────────────────────────────────────────────────────────
+# Proposed variant — BNN with int8 input and output layers
+#
+# First and last layers stay Float32 here, since binarizing them
+# hurts accuracy too much. Those two layers
+# then dominate the payload, since together they hold 5,056 of the
+# model's weights against 26,624 in the binarized hidden layers.
+# Quantizing them to 8 bits rather than leaving them at 32 removes
+# most of that remaining cost without the accuracy penalty that
+# binarizing them would cause.
+# ─────────────────────────────────────────────────────────────
+class BNNInt8IOModel(nn.Module):
+    def __init__(self, input_dim, num_classes,
+                 binarize_activations=True, bits=8):
+        super().__init__()
+        act = BinaryActivation if binarize_activations else nn.Hardtanh
+
+        self.input_layer = QuantLinear(input_dim, 128, bits=bits)
+        self.hidden1 = nn.Sequential(
+            BinaryLinear(128, 128), nn.BatchNorm1d(128), act())
+        self.hidden2 = nn.Sequential(
+            BinaryLinear(128, 64), nn.BatchNorm1d(64), act())
+        self.hidden3 = nn.Sequential(
+            BinaryLinear(64, 32), nn.BatchNorm1d(32), act())
+        self.output_layer = QuantLinear(32, num_classes, bits=bits)
+
+    def forward(self, x):
+        x = torch.relu(self.input_layer(x))
+        x = self.hidden1(x)
+        x = self.hidden2(x)
+        x = self.hidden3(x)
+        return self.output_layer(x)
+
+
+class BNNFullModel(nn.Module):
+    """Every layer binarized, including the input and output layers.
+
+    The hybrid design keeps those two layers in Float32, following the
+    convention set by the original binarized network work. That choice
+    is usually defended by citation rather than measured. This variant
+    exists to measure it. It is identical to BNNModel apart from the
+    two interface layers being binary, so the gap between the two is
+    exactly what full precision on those layers is worth.
+    """
+
+    def __init__(self, input_dim, num_classes, binarize_activations=True):
+        super().__init__()
+        act = BinaryActivation if binarize_activations else nn.Hardtanh
+
+        self.input_layer = BinaryLinear(input_dim, 128)
+        self.hidden1 = nn.Sequential(
+            BinaryLinear(128, 128), nn.BatchNorm1d(128), act())
+        self.hidden2 = nn.Sequential(
+            BinaryLinear(128, 64), nn.BatchNorm1d(64), act())
+        self.hidden3 = nn.Sequential(
+            BinaryLinear(64, 32), nn.BatchNorm1d(32), act())
+        self.output_layer = BinaryLinear(32, num_classes)
+
+    def forward(self, x):
+        x = torch.relu(self.input_layer(x))
+        x = self.hidden1(x)
+        x = self.hidden2(x)
+        x = self.hidden3(x)
+        return self.output_layer(x)
+
+
+class BNNMatchedModel(nn.Module):
+    """Hybrid-precision BNN with the same topology as MLPModel.
+
+    BNNModel carries an extra 128 by 128 binarized layer that MLPModel
+    does not have. That one layer holds 16,384 of BNNModel's 31,680
+    weights, so the proposed model has roughly twice the capacity of
+    the baseline it is compared against. Any accuracy difference
+    between them is then a mixture of two effects, precision and
+    capacity, with no way to separate them.
+
+    This variant removes that layer. The weight matrices are then
+    31x128, 128x64, 64x32 and 32x34, exactly as in MLPModel, giving
+    15,296 weights in both. The only remaining difference between the
+    two models is that the hidden layers here are binary, which is
+    what the comparison is supposed to isolate.
+    """
+
+    def __init__(self, input_dim, num_classes, binarize_activations=True):
+        super().__init__()
+        act = BinaryActivation if binarize_activations else nn.Hardtanh
+
+        self.input_layer = nn.Linear(input_dim, 128)
+        self.hidden1 = nn.Sequential(
+            BinaryLinear(128, 64), nn.BatchNorm1d(64), act())
+        self.hidden2 = nn.Sequential(
+            BinaryLinear(64, 32), nn.BatchNorm1d(32), act())
+        self.output_layer = nn.Linear(32, num_classes)
+
+    def forward(self, x):
+        x = torch.relu(self.input_layer(x))
+        x = self.hidden1(x)
+        x = self.hidden2(x)
+        return self.output_layer(x)
+
+
+class BNNInt8IOMatchedModel(nn.Module):
+    """Hybrid-precision BNN-INT8IO with the same topology as
+    BNNMatchedModel / MLPModel.
+
+    BNNInt8IOModel carries the same undocumented extra 128x128 layer
+    BNNModel does, so it has 32,514 parameters, about twice MLP-INT8's
+    15,938 -- the identical capacity confound BNNMatchedModel already
+    fixes for the Float32-I/O variant, just not yet fixed here. This
+    class is that fix: weight matrices are 31x128, 128x64, 64x32,
+    32x34, matching MLPModel/BNNMatchedModel exactly, with only the
+    input and output layers moved to int8 rather than binarized.
+    """
+
+    def __init__(self, input_dim, num_classes, binarize_activations=True,
+                bits=8):
+        super().__init__()
+        act = BinaryActivation if binarize_activations else nn.Hardtanh
+
+        self.input_layer = QuantLinear(input_dim, 128, bits=bits)
+        self.hidden1 = nn.Sequential(
+            BinaryLinear(128, 64), nn.BatchNorm1d(64), act())
+        self.hidden2 = nn.Sequential(
+            BinaryLinear(64, 32), nn.BatchNorm1d(32), act())
+        self.output_layer = QuantLinear(32, num_classes, bits=bits)
+
+    def forward(self, x):
+        x = torch.relu(self.input_layer(x))
+        x = self.hidden1(x)
+        x = self.hidden2(x)
+        return self.output_layer(x)
+
+
+# ─────────────────────────────────────────────────────────────
+# External baseline (reproduced, not the original authors' code) --
+# BiPruneFL (S. Lee, H. Jang, IEEE Access 2025). See edgepop_ops.py
+# for exactly what is faithfully reproduced (the score-based binary
+# subnetwork search, Biprop/edge-popup) versus what had to be a
+# documented, standard substitute because the full paper text sits
+# behind IEEE Xplore's paywall (the amplitude-gain formula, the
+# aggregation protocol).
+#
+# Input and output layers are kept as plain, full-precision nn.Linear;
+# only the two middle layers use EdgePopupLinear. This was checked,
+# not assumed: the reference implementation behind Biprop itself
+# (github.com/chrundle/biprop, the ICLR 2021 Multi-Prize Lottery
+# Ticket code that BiPruneFL builds on) exposes `first_layer_type` and
+# `--last_layer_dense` as explicit, commonly-used options for running
+# the first/last layer through a plain dense layer instead of the
+# pruned/binary subnet layer -- so preserving I/O precision here is
+# a documented convention of this method family, not GF-IDS's own
+# hybrid design choice imposed on someone else's method. (An earlier
+# version of this file applied EdgePopupLinear to all four layers on
+# the untested assumption that whole-network application was more
+# faithful; that assumption turned out to be backwards once the
+# reference code was actually checked.)
+#
+# Same 31-128-64-32-34 topology as MLPModel/BNNMatchedModel, so the
+# architecture itself is controlled for, consistent with this
+# project's own capacity-matching standard (see BNNMatchedModel).
+#
+# The original paper sweeps several pruning ratios; this reproduces
+# one documented headline operating point, 50% sparsity (keep_fraction
+# 0.5) on the two middle layers, rather than a full ratio sweep.
+# ─────────────────────────────────────────────────────────────
+class BiPruneFLReproModel(nn.Module):
+    def __init__(self, input_dim, num_classes, keep_fraction=0.5):
+        super().__init__()
+        self.layer1 = nn.Linear(input_dim, 128)
+        self.bn1 = nn.BatchNorm1d(128)
+        self.layer2 = EdgePopupLinear(128, 64, keep_fraction=keep_fraction)
+        self.bn2 = nn.BatchNorm1d(64)
+        self.layer3 = EdgePopupLinear(64, 32, keep_fraction=keep_fraction)
+        self.layer4 = nn.Linear(32, num_classes)
+
+    def forward(self, x):
+        x = torch.relu(self.bn1(self.layer1(x)))
+        x = torch.relu(self.bn2(self.layer2(x)))
+        x = torch.relu(self.layer3(x))
+        return self.layer4(x)
+
+
+# ─────────────────────────────────────────────────────────────
+# Controls added for the v2 protocol
+#
+# MLPModel matches BNNMatchedModel's weight shapes but not its layer
+# order: MLPModel normalizes after the 128- and 64-wide ReLU outputs,
+# BNNMatchedModel after the 64- and 32-wide binary layers, and the
+# activations differ. A gap between the two therefore mixes precision
+# with layer design.
+#
+# MLPTwinModel keeps the BNNMatchedModel layout but holds all weights
+# in full precision, and uses Hardtanh (the STE surrogate) where the
+# binary model uses sign. The two differ only in weight and activation
+# precision.
+#
+# BNNFullMatchedModel binarizes the input and output layers of the
+# matched topology too. The v1 full-binary ablation used the larger
+# five-layer network, so its gap mixed topology with I/O precision.
+# ─────────────────────────────────────────────────────────────
+class MLPTwinModel(nn.Module):
+    def __init__(self, input_dim, num_classes):
+        super().__init__()
+        self.input_layer = nn.Linear(input_dim, 128)
+        self.hidden1 = nn.Sequential(
+            nn.Linear(128, 64), nn.BatchNorm1d(64), nn.Hardtanh())
+        self.hidden2 = nn.Sequential(
+            nn.Linear(64, 32), nn.BatchNorm1d(32), nn.Hardtanh())
+        self.output_layer = nn.Linear(32, num_classes)
+
+    def forward(self, x):
+        x = torch.relu(self.input_layer(x))
+        x = self.hidden1(x)
+        x = self.hidden2(x)
+        return self.output_layer(x)
+
+
+class BNNFullMatchedModel(nn.Module):
+    def __init__(self, input_dim, num_classes, binarize_activations=True):
+        super().__init__()
+        act = BinaryActivation if binarize_activations else nn.Hardtanh
+
+        self.input_layer = BinaryLinear(input_dim, 128)
+        self.hidden1 = nn.Sequential(
+            BinaryLinear(128, 64), nn.BatchNorm1d(64), act())
+        self.hidden2 = nn.Sequential(
+            BinaryLinear(64, 32), nn.BatchNorm1d(32), act())
+        self.output_layer = BinaryLinear(32, num_classes)
+
+    def forward(self, x):
+        x = torch.relu(self.input_layer(x))
+        x = self.hidden1(x)
+        x = self.hidden2(x)
+        return self.output_layer(x)
+
+
 MODEL_REGISTRY = {
     "MLP": MLPModel,
     "CNN": CNNModel,
     "LSTM": LSTMModel,
+    "MLP-INT8": MLPInt8Model,
     "BNN": BNNModel,
+    "BNN-INT8IO": BNNInt8IOModel,
+    "BNN-FULL": BNNFullModel,
+    "BNN-MATCHED": BNNMatchedModel,
+    "BNN-INT8IO-MATCHED": BNNInt8IOMatchedModel,
+    "BiPruneFL-Repro": BiPruneFLReproModel,
+    "MLP-TWIN": MLPTwinModel,
+    "BNN-FULL-MATCHED": BNNFullMatchedModel,
 }

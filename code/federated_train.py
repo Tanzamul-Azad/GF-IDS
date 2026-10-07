@@ -1,7 +1,7 @@
 """
 Federated training loop for GF-IDS.
 
-Simulates K = 5 IID clients over T = 20 communication rounds.
+Simulates K = 5 IID clients over T = 45 communication rounds.
 Each round every client starts from the current global model,
 trains locally for E = 5 epochs with Adam, and returns its
 parameters; the server forms a sample-count-weighted average
@@ -9,7 +9,7 @@ parameters; the server forms a sample-count-weighted average
 
 Usage
     python federated_train.py --model BNN
-    python federated_train.py --model MLP --rounds 20 --epochs 5
+    python federated_train.py --model MLP --rounds 45 --epochs 5
 
 Reproduces the per-round accuracy tables reported in the paper.
 """
@@ -25,13 +25,16 @@ import torch.nn as nn
 from sklearn.model_selection import train_test_split
 from torch.utils.data import DataLoader, TensorDataset
 
+from binary_ops import binary_weight_keys, clip_all_binary_weights
 from models import MODEL_REGISTRY
+from quant_ops import fake_quant, quant_weight_keys
 
 # ── Configuration (matches the reported experiments) ─────────
-DATA_DIR = "./data/"
-OUT_DIR = "./runs/"
+_DS = os.environ.get("GFIDS_DATASET", "")
+DATA_DIR = f"./data_{_DS}/" if _DS else "./data/"
+OUT_DIR = f"./runs_{_DS}/" if _DS else "./runs/"
 NUM_CLIENTS = 5
-ROUNDS = 20
+ROUNDS = 45
 LOCAL_EPOCHS = 5
 BATCH_SIZE = 256
 LEARNING_RATE = 0.0005
@@ -49,45 +52,131 @@ def load_data():
     return X_train, X_test, y_train, y_test
 
 
-def split_clients(X_train, y_train, num_clients=NUM_CLIENTS):
-    """Partition the training set into IID shards, one per client.
+def set_seed(seed):
+    """Seed every source of randomness the run depends on.
 
-    Each shard is further split into a local train/test portion;
-    only the local train portion is used for federated updates.
+    Fixing the seed makes client splits and initial weights repeat
+    exactly, so runs can be compared and reproduced.
     """
-    indices = np.random.permutation(len(X_train))
-    X_shuf, y_shuf = X_train[indices], y_train[indices]
-    csize = len(X_shuf) // num_clients
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed_all(seed)
+
+
+def dirichlet_client_indices(y_train, num_clients, alpha):
+    """Label-skew non-IID partition (Hsu et al. 2019, "Measuring the
+    Effects of Non-Identical Data Distribution for Federated Visual
+    Classification"): each class's samples are split across clients
+    according to an independent Dir(alpha) draw, so every client ends
+    up with a different class mix. Smaller alpha means more skew (a
+    client can end up with almost none of a given class); alpha -> inf
+    converges to the IID split.
+
+    Uses the global numpy RNG (seeded by set_seed()), same as the IID
+    path, so the partition is reproducible from --seed alone.
+    """
+    num_classes = int(y_train.max()) + 1
+    client_idx = [[] for _ in range(num_clients)]
+    for c in range(num_classes):
+        idx_c = np.where(y_train == c)[0]
+        np.random.shuffle(idx_c)
+        proportions = np.random.dirichlet(np.repeat(alpha, num_clients))
+        split_points = (np.cumsum(proportions) * len(idx_c)).astype(int)[:-1]
+        for client, part in enumerate(np.split(idx_c, split_points)):
+            client_idx[client].extend(part.tolist())
+    for i in range(num_clients):
+        np.random.shuffle(client_idx[i])
+    return [np.array(idx) for idx in client_idx]
+
+
+def split_clients(X_train, y_train, num_clients=NUM_CLIENTS,
+                  partition="iid", alpha=0.5):
+    """Partition the training set into per-client shards.
+
+    partition="iid" (default): equal-size random shards, byte-identical
+    to the original behaviour -- every existing result stays reproducible.
+    partition="dirichlet": label-skew non-IID split, severity set by alpha
+    (see dirichlet_client_indices()).
+
+    Each shard is further split into a local train/test portion; only
+    the local train portion is used for federated updates. A shard that
+    ends up with fewer than 2 examples of some class (possible at low
+    alpha) falls back to an unstratified local split for that client,
+    since sklearn's stratified split requires at least 2 per class.
+
+    Seeded by set_seed(), so every model in a comparison receives the
+    identical partition.
+    """
+    if partition == "iid":
+        indices = np.random.permutation(len(X_train))
+        csize = len(indices) // num_clients
+        client_idx = [indices[i * csize:(i + 1) * csize]
+                      for i in range(num_clients)]
+    elif partition == "dirichlet":
+        client_idx = dirichlet_client_indices(y_train, num_clients, alpha)
+    else:
+        raise ValueError(f"Unknown partition: {partition!r}")
 
     clients = []
     for i in range(num_clients):
-        X_c = X_shuf[i * csize:(i + 1) * csize]
-        y_c = y_shuf[i * csize:(i + 1) * csize]
+        X_c, y_c = X_train[client_idx[i]], y_train[client_idx[i]]
+        _, counts = np.unique(y_c, return_counts=True)
+        can_stratify = len(counts) > 0 and counts.min() >= 2
         X_tr, X_te, y_tr, y_te = train_test_split(
             X_c, y_c, test_size=CLIENT_TEST_FRACTION,
-            random_state=SEED, stratify=y_c)
+            random_state=SEED, stratify=y_c if can_stratify else None)
         clients.append({"X_train": X_tr, "X_test": X_te,
                         "y_train": y_tr, "y_test": y_te})
-        print(f"Client {i + 1}: Train={X_tr.shape[0]:,}")
+        n_classes = len(np.unique(y_c))
+        extra = (f", {n_classes} classes present"
+                if partition == "dirichlet" else "")
+        print(f"Client {i + 1}: Train={X_tr.shape[0]:,}{extra}")
     return clients
 
 
 def get_loader(X, y, batch_size=BATCH_SIZE):
+    """A fresh DataLoader is created per client per round, so across a
+    45-round x 5-client x many-model run this constructs it thousands
+    of times. num_workers=0 (in-process, no worker subprocesses) is
+    deliberate, not a perf default left alone: on Windows, spawning
+    fresh worker processes this often can exhaust the pagefile-backed
+    shared memory commit limit and crash mid-run with "Couldn't open
+    shared file mapping" (seen on this project's own non-IID run,
+    which died silently at round 40/45 without the caller noticing --
+    see run_noniid.ps1's exit-code check, added for the same reason).
+    The data here is already in memory as numpy arrays (no per-sample
+    disk I/O or decoding), so worker-process parallelism was not doing
+    useful overlapped work anyway -- num_workers=0 removes the crash
+    risk without a real throughput cost for this workload.
+    """
     ds = TensorDataset(torch.FloatTensor(X), torch.LongTensor(y))
     return DataLoader(ds, batch_size=batch_size, shuffle=True,
-                      num_workers=2, pin_memory=True)
+                      num_workers=0, pin_memory=True)
 
 
-def train_one_round(model, loader, optimizer, criterion, epochs):
-    """Local training: E epochs of Adam on one client's shard."""
+def train_one_round(model, loader, optimizer, criterion, epochs,
+                    prox_mu=0.0, global_params=None):
+    """Local training: E epochs of Adam on one client's shard.
+
+    After each step the latent weights of any binary layer are
+    clamped back into [-1, 1]. Without that clamp they drift outside
+    the STE gradient window, the surrogate gradient goes to zero and
+    those layers stop learning.
+    """
     model.train()
     for _ in range(epochs):
         for X_b, y_b in loader:
             X_b, y_b = X_b.to(device), y_b.to(device)
             optimizer.zero_grad()
             loss = criterion(model(X_b), y_b)
+            if prox_mu > 0.0 and global_params is not None:
+                # FedProx: keep local weights close to the global model.
+                prox = sum(((p - g) ** 2).sum() for p, g in
+                           zip(model.parameters(), global_params))
+                loss = loss + 0.5 * prox_mu * prox
             loss.backward()
             optimizer.step()
+            clip_all_binary_weights(model)
 
 
 @torch.no_grad()
@@ -105,10 +194,70 @@ def evaluate(model, X, y, batch_size=1024):
     return correct / total
 
 
-def fedavg(local_states, local_sizes):
-    """Sample-count-weighted average of client parameters.
+@torch.no_grad()
+def evaluate_loss(model, X, y, criterion, batch_size=1024):
+    """Mean loss of the global model on the held-out test set.
 
-    w_global = sum_k (n_k / n) * w_k
+    Used only for the convergence check (paper Eq. 8:
+    |L^{t+1} - L^t| < delta). Evaluated post-aggregation, at the same
+    point accuracy is measured, so it reflects the model actually
+    distributed to clients rather than any one client's local loss.
+    """
+    model.eval()
+    loader = DataLoader(
+        TensorDataset(torch.FloatTensor(X), torch.LongTensor(y)),
+        batch_size=batch_size)
+    total_loss = total_n = 0.0
+    for X_b, y_b in loader:
+        X_b, y_b = X_b.to(device), y_b.to(device)
+        loss = criterion(model(X_b), y_b)
+        total_loss += loss.item() * len(y_b)
+        total_n += len(y_b)
+    return total_loss / total_n
+
+
+def has_converged(history, delta, patience, min_rounds):
+    """Eq. 8, made robust to a single noisy round.
+
+    Stops only once |L^{t+1} - L^t| < delta holds for `patience`
+    consecutive round-pairs, and never before `min_rounds`. A
+    single-round check would trigger on a coincidence; round-to-round
+    accuracy in these runs swings by double digits well past round 30
+    (e.g. BNN dips to 92% at rounds 41 and 43 between runs above 97%),
+    so a lone small loss delta is not enough evidence of convergence.
+
+    Returns False, safely, if any round in the checked window predates
+    this function's introduction and has no recorded loss - this lets
+    a resumed run fall back to running the full round budget instead
+    of crashing or false-triggering on missing data.
+    """
+    if len(history) < max(min_rounds, patience + 1):
+        return False
+    recent = history[-(patience + 1):]
+    losses = [h.get("loss") for h in recent]
+    if any(v is None for v in losses):
+        return False
+    deltas = [abs(losses[i + 1] - losses[i]) for i in range(len(losses) - 1)]
+    return all(d < delta for d in deltas)
+
+
+def fedavg(local_states, local_sizes, rebinarize_keys=None,
+           requantize_keys=None):
+    """Sample-count-weighted average, with optional re-binarization.
+
+    Aggregation runs on the real-valued weights:
+
+        W = sum_k (n_k / n) * W_k
+
+    Averaging must happen in full precision. Averaging values that are already binary
+    gives fractions that are not usable weights.
+
+    The averaged binary layers are then mapped back onto {-1, +1}:
+
+        W_global = sign(W)
+
+    so that what is distributed to the clients is a genuinely binary
+    global model rather than a real-valued one.
     """
     total = sum(local_sizes)
     new_state = {}
@@ -117,51 +266,281 @@ def fedavg(local_states, local_sizes):
             local_states[i][key] * (local_sizes[i] / total)
             for i in range(len(local_states))
         )
+
+    if rebinarize_keys:
+        for key in rebinarize_keys:
+            if key in new_state:
+                s = torch.sign(new_state[key])
+                new_state[key] = torch.where(
+                    s == 0, torch.ones_like(s), s)
+
+    # The int8 counterpart: snap the averaged weights back onto the
+    # quantization grid, so the distributed model is genuinely 8 bit
+    # and the baseline is treated on the same terms as the proposal.
+    if requantize_keys:
+        for key, bits in requantize_keys.items():
+            if key in new_state:
+                new_state[key] = fake_quant(new_state[key], bits)
+
+    return new_state
+
+
+def class_weights_from(clients, num_classes):
+    """Inverse-frequency class weights, pooled across all clients.
+
+    The dataset is severely imbalanced (the largest class has close to
+    848,000 test instances, several rare classes fewer than 150), and
+    several classes never get predicted at all under a plain loss.
+    Weighting the loss by inverse class frequency pushes the optimizer
+    to pay attention to those classes instead of writing them off, at
+    the cost of some accuracy on the dominant ones. Counts are pooled
+    across all clients before the split into rounds, so every client
+    uses the same weights and the comparison to the unweighted run
+    stays otherwise identical.
+    """
+    counts = torch.zeros(num_classes)
+    for client in clients:
+        y = torch.LongTensor(client["y_train"])
+        counts += torch.bincount(y, minlength=num_classes).float()
+    weights = 1.0 / counts.clamp(min=1)
+    return weights * (num_classes / weights.sum())
+
+
+def run_tag(model_name, class_weighted=False, seed=None,
+            partition="iid", alpha=None, aggregator="fedavg"):
+    """Filename stem identifying one run, so variants never collide."""
+    tag = model_name
+    if class_weighted:
+        tag += "_cw"
+    if seed is not None:
+        tag += f"_seed{seed}"
+    if aggregator != "fedavg":
+        tag += f"_{aggregator}"
+    if partition == "dirichlet":
+        tag += f"_dir{alpha}"
+    return tag
+
+
+@torch.no_grad()
+def signsgd_vote(global_state, local_states, param_keys, step,
+                 rebinarize_keys=None, local_sizes=None):
+    """Qin et al.-style aggregation: majority vote over update signs.
+
+    Each client would upload only sign(W_k - W_global), one bit per
+    weight. The server takes the sign of the sum of those votes and
+    shifts the global weights by a constant amount. Non-parameter buffers
+    (batch-norm statistics) are averaged as in FedAvg.
+    """
+    total = sum(local_sizes)
+    new_state = {}
+    for key in global_state.keys():
+        if key in param_keys:
+            votes = sum(torch.sign(ls[key] - global_state[key])
+                        for ls in local_states)
+            new_state[key] = global_state[key] + step * torch.sign(votes)
+        elif global_state[key].dtype.is_floating_point:
+            new_state[key] = sum(ls[key] * (n / total) for ls, n in
+                                 zip(local_states, local_sizes))
+        else:
+            new_state[key] = local_states[0][key]
+    if rebinarize_keys:
+        for key in rebinarize_keys:
+            if key in new_state:
+                sg = torch.sign(new_state[key])
+                new_state[key] = torch.where(sg == 0, torch.ones_like(sg), sg)
     return new_state
 
 
 def federated_training(model_name, clients, X_test, y_test,
                        input_dim, num_classes,
                        rounds=ROUNDS, epochs=LOCAL_EPOCHS,
-                       lr=LEARNING_RATE):
+                       lr=LEARNING_RATE, rebinarize=True, seed=None,
+                       class_weighted=False, resume=False,
+                       delta=0.001, patience=5, min_rounds=15,
+                       lr_decay=1.0, lr_min=1e-6,
+                       partition="iid", alpha=None,
+                       aggregator="fedavg", mu=0.01, sign_step=0.01):
+    if aggregator in ("signsgd5", "signsgdlat5"):
+        sign_step = 0.05
+    if aggregator == "signsgdlat1":
+        sign_step = 0.001
     ModelClass = MODEL_REGISTRY[model_name]
+    tag = run_tag(model_name, class_weighted, seed, partition, alpha,
+                  aggregator)
+    ckpt_path = os.path.join(OUT_DIR, f"{tag}_checkpoint.pt")
 
     print(f"\n{'=' * 45}\n  Training: {model_name}\n{'=' * 45}")
     global_model = ModelClass(input_dim, num_classes).to(device)
-    criterion = nn.CrossEntropyLoss()
-    history = []
 
-    for t in range(rounds):
+    if class_weighted:
+        weights = class_weights_from(clients, num_classes).to(device)
+        criterion = nn.CrossEntropyLoss(weight=weights)
+        print(f"  Class-weighted loss: min={weights.min():.3f} "
+              f"max={weights.max():.3f}")
+    else:
+        criterion = nn.CrossEntropyLoss()
+
+    # Resume from the last completed round if a checkpoint is there.
+    # A resumed run is not bit-identical to an uninterrupted one, since
+    # the data loader shuffling picks up from a fresh RNG state rather
+    # than the one it would have had. The client partition and the
+    # weights are exact, so the comparison between models still holds,
+    # but a run used for a reproducibility claim should be one that
+    # finished in a single session.
+    history = []
+    start_round = 0
+    prev_binary_state = None
+    if resume and os.path.exists(ckpt_path):
+        ckpt = torch.load(ckpt_path, map_location=device)
+        global_model.load_state_dict(ckpt["model_state"])
+        history = ckpt["history"]
+        start_round = ckpt["round"]
+        if start_round < rounds:
+            print(f"  Resuming from round {start_round + 1} "
+                  f"({ckpt_path})")
+    elif resume:
+        print(f"  No checkpoint at {ckpt_path}, starting from round 1")
+
+    # Only weight matrices are snapped back to their target precision
+    # after aggregation; biases and BatchNorm parameters stay full
+    # precision in every model.
+    rebin_keys = binary_weight_keys(global_model) if rebinarize else None
+    requant_keys = quant_weight_keys(global_model) if rebinarize else None
+    if rebin_keys:
+        print(f"  Re-binarizing after aggregation: {sorted(rebin_keys)}")
+    if requant_keys:
+        print(f"  Re-quantizing after aggregation: "
+              f"{sorted(requant_keys)}")
+
+    # On resume, seed the sign-flip baseline from the checkpoint's
+    # already-re-binarized weights, so the first round after a resume
+    # is compared against the real previous round rather than being
+    # treated as if no prior round existed.
+    if rebin_keys and start_round > 0:
+        state = global_model.state_dict()
+        prev_binary_state = {k: state[k].clone() for k in rebin_keys}
+
+    if start_round >= rounds:
+        print(f"  Already complete ({start_round}/{rounds} rounds)")
+        return global_model, history
+
+    # Recomputed from the loaded history on resume, so a resumed run
+    # tracks the correct running best instead of starting over at -1.
+    best_acc_so_far = max((h["accuracy"] for h in history), default=-1.0)
+
+    for t in range(start_round, rounds):
+        # Exponential decay of the local learning rate, round by round.
+        # lr_decay=1.0 (the default) makes this a no-op, exactly
+        # reproducing the constant-lr behaviour every existing run used.
+        # The paper's own Limitations names this as the fix for the
+        # Adam-momentum/FedAvg instability seen in the T=45 runs; this
+        # is that fix, made real rather than just described.
+        round_lr = max(lr_min, lr * (lr_decay ** t))
         local_states, local_sizes = [], []
 
         for client in clients:
             local_model = ModelClass(input_dim, num_classes).to(device)
             local_model.load_state_dict(
                 copy.deepcopy(global_model.state_dict()))
-            optimizer = torch.optim.Adam(local_model.parameters(), lr=lr)
+            optimizer = torch.optim.Adam(local_model.parameters(),
+                                         lr=round_lr)
             loader = get_loader(client["X_train"], client["y_train"])
-            train_one_round(local_model, loader, optimizer, criterion, epochs)
+            if aggregator == "fedprox":
+                g_params = [p.detach().clone().to(device)
+                            for p in global_model.parameters()]
+                train_one_round(local_model, loader, optimizer, criterion,
+                                epochs, prox_mu=mu, global_params=g_params)
+            else:
+                train_one_round(local_model, loader, optimizer, criterion,
+                                epochs)
             local_states.append(copy.deepcopy(local_model.state_dict()))
             local_sizes.append(len(client["X_train"]))
 
-        global_model.load_state_dict(fedavg(local_states, local_sizes))
+        if aggregator in ("signsgd", "signsgd5", "signsgdlat", "signsgdlat5", "signsgdlat1"):
+            global_model.load_state_dict(signsgd_vote(
+                copy.deepcopy(global_model.state_dict()), local_states,
+                {n for n, _ in global_model.named_parameters()},
+                sign_step,
+                None if aggregator.startswith("signsgdlat") else rebin_keys,
+                local_sizes))
+        else:
+            global_model.load_state_dict(
+                fedavg(local_states, local_sizes, rebin_keys, requant_keys))
+
+        # Share of binary weights that flipped sign relative to the
+        # previous round's re-binarized global model. Investigates the
+        # non-IID robustness question raised in the paper: whether
+        # severe client skew makes the post-aggregation sign() step
+        # discard more information round to round than it does at
+        # IID or moderate skew. None on the first round of a fresh
+        # run, since there is no previous re-binarized state to
+        # compare against.
+        sign_flip_rate = None
+        if rebin_keys:
+            state = global_model.state_dict()
+            cur_binary_state = {k: state[k].clone() for k in rebin_keys}
+            if prev_binary_state is not None:
+                flipped = total = 0
+                for k in rebin_keys:
+                    flipped += (prev_binary_state[k].sign()
+                               != cur_binary_state[k].sign()).sum().item()
+                    total += prev_binary_state[k].numel()
+                sign_flip_rate = flipped / total
+            prev_binary_state = cur_binary_state
 
         acc = evaluate(global_model, X_test, y_test)
-        history.append({"round": t + 1, "accuracy": acc})
-        print(f"  Round {t + 1:2d}/{rounds} - Accuracy: {acc:.4f}")
+        loss_val = evaluate_loss(global_model, X_test, y_test, criterion)
+        history.append({"round": t + 1, "accuracy": acc, "loss": loss_val,
+                        "lr": round_lr, "sign_flip_rate": sign_flip_rate})
+        flip_note = (f"  flip={sign_flip_rate:.4f}"
+                    if sign_flip_rate is not None else "")
+        lr_note = f"  lr={round_lr:.2e}" if lr_decay != 1.0 else ""
+        print(f"  Round {t + 1:2d}/{rounds} - Accuracy: {acc:.4f}  "
+              f"Loss: {loss_val:.4f}{lr_note}{flip_note}")
 
-        if (t + 1) % 5 == 0:
+        # Save the weights at the best-accuracy round separately, since
+        # the resumable checkpoint below is overwritten every round and
+        # only the last round's weights would otherwise survive to the
+        # end of training. Without this, computing security metrics
+        # (F1/MCC/FPR/confusion matrix) at the "best accuracy" operating
+        # point reported in the paper is impossible after the fact.
+        if acc > best_acc_so_far:
+            best_acc_so_far = acc
             torch.save(global_model.state_dict(),
-                       os.path.join(OUT_DIR, f"{model_name}_checkpoint.pt"))
+                       os.path.join(OUT_DIR, f"{tag}_best.pt"))
+
+        # Checkpoint every round rather than every fifth. These models
+        # are a few hundred KB, so the write costs almost nothing next
+        # to a round of training, and it means a session that dies
+        # loses at most one round instead of up to five.
+        torch.save({"model_state": global_model.state_dict(),
+                    "history": history,
+                    "round": t + 1,
+                    "model_name": model_name,
+                    "seed": seed}, ckpt_path)
+
+        # Eq. 8: stop once the global loss has settled, rather than
+        # always running the full round budget. Every model uses this
+        # same rule (same delta, same patience), so the fairness of
+        # the comparison rests on a shared, principled stopping
+        # criterion instead of on an arbitrarily chosen fixed T.
+        if has_converged(history, delta, patience, min_rounds):
+            print(f"  Converged: |loss delta| < {delta} held for "
+                  f"{patience} consecutive rounds. "
+                  f"Stopping at round {t + 1}/{rounds}.")
+            break
 
     torch.save(global_model.state_dict(),
-               os.path.join(OUT_DIR, f"{model_name}_final.pt"))
-    with open(os.path.join(OUT_DIR, f"{model_name}_history.pkl"), "wb") as f:
+               os.path.join(OUT_DIR, f"{tag}_final.pt"))
+    with open(os.path.join(OUT_DIR, f"{tag}_history.pkl"), "wb") as f:
         pickle.dump(history, f)
 
     best = max(history, key=lambda h: h["accuracy"])
+    stopped_early = history[-1]["round"] < rounds
     print(f"\n  Best:  Round {best['round']} - {best['accuracy'] * 100:.2f}%")
-    print(f"  Final: Round {rounds} - {history[-1]['accuracy'] * 100:.2f}%")
+    print(f"  Final: Round {history[-1]['round']} - "
+          f"{history[-1]['accuracy'] * 100:.2f}%"
+          f"{'  (converged early)' if stopped_early else ''}")
     return global_model, history
 
 
@@ -172,9 +551,81 @@ def main():
     parser.add_argument("--rounds", type=int, default=ROUNDS)
     parser.add_argument("--epochs", type=int, default=LOCAL_EPOCHS)
     parser.add_argument("--lr", type=float, default=LEARNING_RATE)
+    parser.add_argument("--seed", type=int, default=SEED,
+                        help="seed for the client split and weight init; "
+                             "vary it to obtain error bars")
+    parser.add_argument("--class-weighted", action="store_true",
+                        help="weight the loss by inverse class frequency, "
+                             "to raise recall on the rare attack classes")
+    parser.add_argument("--resume", action="store_true",
+                        help="continue from the last completed round if a "
+                             "checkpoint for this run exists")
+    parser.add_argument("--early-stop", action="store_true",
+                        help="enable Eq. 8 loss-convergence stopping "
+                             "instead of always running the full "
+                             "--rounds budget. OFF by default: the BNN "
+                             "diagnostic run showed a long noisy plateau "
+                             "at 83-93%% (rounds 21-32) before the real "
+                             "breakthrough to 97%%+ at round 36+, so an "
+                             "adaptive stopper risks quitting on a false "
+                             "plateau. The fixed budget determined by "
+                             "that diagnostic run (T=45, applied "
+                             "identically to every model) is the "
+                             "validated, safe default; use --early-stop "
+                             "only for exploration, not for numbers that "
+                             "go in the paper.")
+    parser.add_argument("--delta", type=float, default=0.001,
+                        help="Eq. 8 convergence threshold on the global "
+                             "test loss, only used with --early-stop")
+    parser.add_argument("--patience", type=int, default=5,
+                        help="consecutive rounds the delta must hold for "
+                             "before stopping, only used with --early-stop")
+    parser.add_argument("--min-rounds", type=int, default=15,
+                        help="never stop before this many rounds, only "
+                             "used with --early-stop")
+    parser.add_argument("--lr-decay", type=float, default=1.0,
+                        help="multiply the local learning rate by this "
+                             "factor every round (e.g. 0.97). 1.0 (default) "
+                             "means constant lr, exactly reproducing every "
+                             "existing run's behaviour. This is what the "
+                             "paper's Limitations names as the fix for "
+                             "the round-to-round oscillation seen at "
+                             "T=45 (MLP's final-round accuracy of 63.53%% "
+                             "against a best of 95.86%% in the same run "
+                             "is the clearest example). Applying it to "
+                             "only some of the six models breaks the "
+                             "fair-comparison principle used throughout "
+                             "this project, so if you use it here, every "
+                             "model -- including BNN and MLP, already "
+                             "complete at T=45 -- needs to be rerun with "
+                             "the same decay for the comparison to hold.")
+    parser.add_argument("--lr-min", type=float, default=1e-6,
+                        help="floor for --lr-decay so the rate never "
+                             "reaches zero")
+    parser.add_argument("--partition", default="iid",
+                        choices=["iid", "dirichlet"],
+                        help="client data split. 'iid' (default) is the "
+                             "original equal-size random shard, "
+                             "byte-identical to every existing run. "
+                             "'dirichlet' is a label-skew non-IID split "
+                             "(Hsu et al. 2019), severity set by --alpha")
+    parser.add_argument("--alpha", type=float, default=0.5,
+                        help="Dirichlet concentration for "
+                             "--partition dirichlet: smaller = more "
+                             "skewed (0.1 severe, 0.5 moderate, "
+                             "large alpha -> approaches IID). Ignored "
+                             "for --partition iid")
+    parser.add_argument("--aggregator", default="fedavg",
+                        choices=["fedavg", "fedprox", "signsgd", "signsgd5", "signsgdlat", "signsgdlat5", "signsgdlat1"])
+    parser.add_argument("--mu", type=float, default=0.01,
+                        help="FedProx proximal strength")
+    parser.add_argument("--sign-step", type=float, default=0.01,
+                        help="server step for signsgd majority vote")
     args = parser.parse_args()
 
     os.makedirs(OUT_DIR, exist_ok=True)
+    set_seed(args.seed)
+    print(f"Seed: {args.seed}")
 
     X_train, X_test, y_train, y_test = load_data()
     input_dim = X_train.shape[1]
@@ -182,10 +633,24 @@ def main():
     print(f"Device: {device}, INPUT_DIM={input_dim}, "
           f"NUM_CLASSES={num_classes}")
 
-    clients = split_clients(X_train, y_train)
+    # -1 as delta can never be beaten by an absolute loss difference
+    # (which is always >= 0), so this is what makes has_converged()
+    # a no-op when --early-stop was not passed, without needing a
+    # second code path.
+    delta = args.delta if args.early_stop else -1.0
+
+    clients = split_clients(X_train, y_train,
+                            partition=args.partition, alpha=args.alpha)
     federated_training(args.model, clients, X_test, y_test,
                        input_dim, num_classes,
-                       rounds=args.rounds, epochs=args.epochs, lr=args.lr)
+                       rounds=args.rounds, epochs=args.epochs, lr=args.lr,
+                       seed=args.seed, class_weighted=args.class_weighted,
+                       resume=args.resume, delta=delta,
+                       patience=args.patience, min_rounds=args.min_rounds,
+                       lr_decay=args.lr_decay, lr_min=args.lr_min,
+                       partition=args.partition, alpha=args.alpha,
+                       aggregator=args.aggregator, mu=args.mu,
+                       sign_step=args.sign_step)
 
 
 if __name__ == "__main__":

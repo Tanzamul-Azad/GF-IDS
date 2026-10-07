@@ -1,0 +1,63 @@
+{
+ "run_id": "LSTM_iid_s42_694295e561",
+ "config": {
+  "dataset": "nfton",
+  "model": "LSTM",
+  "seed": 42,
+  "split_seed": 42,
+  "clients": 5,
+  "rounds": 45,
+  "epochs": 5,
+  "batch_size": 256,
+  "lr": 0.0005,
+  "lr_decay": 1.0,
+  "lr_min": 1e-06,
+  "val_fraction": 0.2,
+  "partition": "iid",
+  "alpha": null,
+  "aggregator": "fedavg",
+  "mu": 0.01,
+  "server_lr": 1.0,
+  "init_broadcast": "float",
+  "class_weight": "none",
+  "data_sha256": {
+   "X_train.npy": "687bd046610de9bd102013a9417c94e492f9ed2d5400363e1a2e6696dde0d033",
+   "y_train.npy": "03e0084b5bc63c3927353fbcf50dd4f77416355dcd6b54dd433d6377048cf53e"
+  }
+ },
+ "code_sha256": {
+  "fl_v2.py": "77d8cab4f091d40b6ae542961083d87228ce3ee885e1a773fc341d5fd80e26c2",
+  "codec.py": "26cca9937476abfd075bd606b0ac293543aac6f88017d26ef57b022bbcd65aaf",
+  "models.py": "454670ee29fc922c988ad4123dbecd7236c4bdc090e93aab14a86af1c46f6205",
+  "binary_ops.py": "7ca7de205f88600176e87c89b9950ae4186abde4bf682183f781c9575e30342a",
+  "quant_ops.py": "33a24a2f73c8b236c7b43616b6218794f42542043c8a42d44a321215b4d71791",
+  "edgepop_ops.py": "47731da054f8463ae83270d26e43310a340cd5f4a35bc07301bbe1043387c2c6",
+  "metrics_v2.py": "b64708f17ad9096827f3df72de5b870f33113b3f4e1ce059da1a4626926af0b2"
+ },
+ "torch": "2.6.0+cu124",
+ "python": "3.13.7",
+ "device": "NVIDIA GeForce RTX 4060",
+ "client_train_sizes": [
+  87050,
+  87050,
+  87050,
+  87050,
+  87050
+ ],
+ "client_val_sizes": [
+  21763,
+  21763,
+  21763,
+  21763,
+  21763
+ ],
+ "client_classes_present": [
+  10,
+  10,
+  10,
+  10,
+  10
+ ],
+ "initial_broadcast_bytes": 211368,
+ "selection_rule": "max pooled validation macro F1; earliest round on ties"
+}

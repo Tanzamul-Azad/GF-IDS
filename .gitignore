@@ -5,11 +5,23 @@ data/
 *.csv
 archive*.zip
 
-# Training outputs
-runs/
-figures/
+# Training outputs: results.csv, seed_summary.csv, history.pkl and
+# figures/ are tracked on purpose, they are the evidence behind the
+# paper's numbers and are tiny. Model checkpoints (*.pt) are NOT
+# tracked: with the client split and weight init now seeded, any
+# checkpoint can be regenerated exactly from the code, the data and
+# the seed, so storing the binary weights themselves would only add
+# repeated dead weight to the repo across every rerun and variant.
+#
+# The blanket "*.csv" rule above (for dataset/derived arrays) was
+# silently catching runs/results_*.csv too, contradicting this
+# comment's stated intent -- these two exceptions restore it.
+!runs/results_*.csv
+!runs/seed_summary.csv
+!runs_nfton/results_*.csv
+!runs_unsw/results_*.csv
+runs/*.pt
 *.pt
-*.pkl
 
 # LaTeX build artifacts
 *.aux
@@ -44,8 +56,16 @@ CODE_VERIFICATION.md
 paper/*.tex
 *.tex
 
+# cached test-set predictions (large, regenerable)
+runs/test_predictions_*.npz
+
 # Paper material stays out of the public repository while the paper is under review
 # (kept locally): progress notes, manuscript figures and plots.
 docs/
 paper/
 figures/
+
+# v2 run bookkeeping: lock files, resume backups and dataset-derived row masks
+runs_v2/**/*.lock
+runs_v2/**/*.bak
+data_v2/**/*.npz

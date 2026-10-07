@@ -14,16 +14,28 @@ Efficiency metrics:
 
 Payload size accounting
 -----------------------
-`payload_bits` below prices any hidden-layer weight tensor at 1 bit
-per parameter and everything else at 32 bits. This is an ANALYTICAL
-figure describing an idealized 1-bit encoding of the binarized
-layers; it is not a measurement of the bytes the simulation actually
-transfers, since `federated_train.py` moves full float32 state dicts.
-`measured_payload_bits` is provided alongside it to report the size
-of the tensors as they are actually serialised.
+Three figures are reported so the communication claim can be stated
+precisely:
 
-Report whichever figure matches the claim being made, and say which
-one it is.
+  PackedPayload    binary weight matrices actually bit-packed with
+                   numpy.packbits, everything else at native dtype.
+                   This is the real transmitted size.
+  AnalyticPayload  the same thing computed analytically (1 bit per
+                   binary weight, 32 bits otherwise). Should agree
+                   with PackedPayload up to byte-alignment padding.
+  Float32Payload   the whole state dict sent uncompressed, i.e. what
+                   a naive implementation would transmit.
+
+Quote PackedPayload for communication-efficiency claims, and use
+Float32Payload to show what the packing buys.
+
+Operation counts
+----------------
+FLOPs and BOPs are reported separately. Binary layers run as XNOR +
+popcount rather than multiply-accumulate, so folding them into a
+single FLOP number would misrepresent both the cost and the saving.
+A custom thop handler is registered for BinaryLinear, since thop
+dispatches on exact module type and would otherwise skip it silently.
 """
 
 import argparse
@@ -35,10 +47,16 @@ from sklearn.metrics import (confusion_matrix, f1_score, matthews_corrcoef,
                              precision_score, recall_score)
 from torch.utils.data import DataLoader, TensorDataset
 
+from binary_ops import BinaryLinear, binary_weight_keys
+from edgepop_ops import (EdgePopupLinear, count_edgepop_linear,
+                         edgepop_frozen_keys, edgepop_score_keys)
+from federated_train import run_tag
 from models import MODEL_REGISTRY
+from quant_ops import QuantLinear, quant_weight_keys
 
-DATA_DIR = "./data/"
-RUN_DIR = "./runs/"
+_DS = os.environ.get("GFIDS_DATASET", "")
+DATA_DIR = f"./data_{_DS}/" if _DS else "./data/"
+RUN_DIR = f"./runs_{_DS}/" if _DS else "./runs/"
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -77,39 +95,160 @@ def security_metrics(preds, labels, num_classes):
             "FPR(%)": round(fpr * 100, 2)}
 
 
-def payload_bits(model):
-    """Idealized payload: 1 bit per binarized hidden weight, else 32."""
+def precision_map(model):
+    """Bits per element for every weight tensor that is not Float32.
+
+    Binary layers contribute 1 bit per weight, int8 layers 8 bits.
+    Anything absent from this map keeps its native dtype.
+    """
+    bits = {k: 1 for k in binary_weight_keys(model)}
+    bits.update(quant_weight_keys(model))
+    return bits
+
+
+def payload_bits(model, exclude=frozenset()):
+    """Payload with each weight tensor priced at its own precision.
+
+    Biases and BatchNorm parameters stay Float32, matching the hybrid
+    precision design. A quantized tensor also carries one Float32
+    scale factor, which is counted here because the receiver cannot
+    reconstruct the weights without it.
+
+    `exclude` skips named tensors entirely (0 bits) -- used for
+    EdgePopupLinear's frozen weight buffers, which are fixed at
+    construction, identical across every client, and never touched
+    by training, so they do not need to cross the network after the
+    first round (see edgepop_frozen_keys()).
+
+    Iterates the full state dict rather than named_parameters(),
+    because FedAvg transports the whole state dict, including the
+    BatchNorm running statistics. Those are buffers rather than
+    parameters but still cross the network every round, so counting
+    only named_parameters() understates the payload of every model
+    that uses BatchNorm.
+    """
+    bits = precision_map(model)
     total = 0
-    for name, param in model.named_parameters():
-        is_hidden_weight = ("hidden" in name) and name.endswith("weight")
-        total += param.numel() * (1 if is_hidden_weight else 32)
+    for name, tensor in model.state_dict().items():
+        if name in exclude:
+            continue
+        if name in bits:
+            total += tensor.numel() * bits[name]
+            if bits[name] > 1:
+                total += 32          # per-tensor scale factor
+        else:
+            total += tensor.numel() * tensor.element_size() * 8
     return total
 
 
-def measured_payload_bits(model):
-    """Actual serialised size of the state dict, in bits."""
-    return sum(p.numel() * p.element_size() * 8
-               for p in model.state_dict().values())
+def packed_payload_bits(model, exclude=frozenset()):
+    """Payload measured by actually encoding each tensor.
+
+    Serialises the state dict the way a real client would. Binary
+    weight matrices are packed with numpy.packbits at eight weights
+    per byte; int8 layers are cast to one byte per weight plus a
+    Float32 scale; everything else keeps its native dtype. This is a
+    measurement of the encoded bytes rather than an analytical
+    estimate. `exclude` skips named tensors entirely, same as
+    payload_bits().
+    """
+    bits = precision_map(model)
+    total_bits = 0
+    for name, tensor in model.state_dict().items():
+        if name in exclude:
+            continue
+        w = tensor.detach().cpu().numpy()
+        if bits.get(name) == 1:
+            packed = np.packbits((w > 0).astype(np.uint8).reshape(-1))
+            total_bits += packed.nbytes * 8
+        elif bits.get(name) == 8:
+            total_bits += w.astype(np.int8).nbytes * 8 + 32
+        else:
+            total_bits += tensor.numel() * tensor.element_size() * 8
+    return total_bits
+
+
+def float32_payload_bits(model, exclude=frozenset()):
+    """Payload if the whole state dict is sent as-is, uncompressed."""
+    return sum(t.numel() * t.element_size() * 8
+               for name, t in model.state_dict().items()
+               if name not in exclude)
+
+
+def count_binary_linear(module, x, y):
+    """thop handler for BinaryLinear.
+
+    thop dispatches on the exact module type, so BinaryLinear - being
+    a subclass of nn.Linear - is not matched by the built-in rule and
+    would silently contribute zero operations. Registering this
+    handler makes the binary layers count like any other dense layer,
+    so FLOPs across models are compared on the same basis.
+
+    Binary layers execute as XNOR + popcount rather than
+    multiply-accumulate, so these are reported separately as binary
+    operations (BOPs) rather than folded into the FLOP total.
+    """
+    module.total_ops += torch.DoubleTensor(
+        [module.in_features * module.out_features])
+
+
+def count_quant_linear(module, x, y):
+    """thop handler for QuantLinear.
+
+    Exactly the same blind spot as BinaryLinear: QuantLinear subclasses
+    nn.Linear, thop dispatches on the exact type, so without this the
+    int8 layers contribute zero operations and MLP-INT8 appears to do
+    almost no work at all despite having the same architecture as MLP.
+
+    These are 8-bit integer multiply-accumulates, so they are reported
+    separately as IOPs rather than folded into either FLOPs or BOPs.
+    """
+    module.total_ops += torch.DoubleTensor(
+        [module.in_features * module.out_features])
 
 
 def efficiency_metrics(model, X_test, y_test, input_dim):
     params = sum(p.numel() for p in model.parameters())
 
-    ideal_kb = payload_bits(model) / 8 / 1024
-    measured_kb = measured_payload_bits(model) / 8 / 1024
+    # EdgePopupLinear's frozen weight buffers never change round to
+    # round (see edgepop_ops.edgepop_frozen_keys()), so a real
+    # deployment only needs to send them once, not every round -- the
+    # per-round payload figures reported for BiPruneFL-Repro exclude
+    # them. Empty for every other model, so this is a no-op elsewhere.
+    exclude = edgepop_frozen_keys(model)
+    packed_kb = packed_payload_bits(model, exclude) / 8 / 1024
+    analytic_kb = payload_bits(model, exclude) / 8 / 1024
+    float32_kb = float32_payload_bits(model, exclude) / 8 / 1024
 
-    # FLOPs. NOTE: thop dispatches on the exact module type, so a
-    # subclass such as BinaryLinear is not matched by the built-in
-    # nn.Linear rule and contributes zero unless a custom handler is
-    # registered. verbose=True prints a warning for every unhandled
-    # module - check that output before quoting these numbers.
+    # Operation counts, split by precision so the comparison is
+    # explicit about what is a float multiply-accumulate and what is
+    # a bitwise operation.
     try:
         from thop import profile
         dummy = torch.randn(1, input_dim).to(device)
-        flops, _ = profile(model, inputs=(dummy,), verbose=True)
-        flops_m = round(flops / 1e6, 3)
+
+        total_ops, _ = profile(model, inputs=(dummy,), verbose=False,
+                               custom_ops={BinaryLinear: count_binary_linear,
+                                           QuantLinear: count_quant_linear,
+                                           EdgePopupLinear: count_edgepop_linear})
+        # Split by precision so each tier is explicit: 1-bit XNOR/popcount
+        # (BOPs -- EdgePopupLinear folds in here too, scaled by its
+        # sparsity, since it is also a signed-binary operation), 8-bit
+        # integer MACs (IOPs), and genuine float MACs.
+        bops = sum(m.in_features * m.out_features
+                   for m in model.modules()
+                   if isinstance(m, BinaryLinear))
+        bops += sum(m.in_features * m.out_features * m.keep_fraction
+                    for m in model.modules()
+                    if isinstance(m, EdgePopupLinear))
+        iops = sum(m.in_features * m.out_features
+                   for m in model.modules()
+                   if isinstance(m, QuantLinear))
+        flops_m = round((total_ops - bops - iops) / 1e6, 4)
+        bops_m = round(bops / 1e6, 4)
+        iops_m = round(iops / 1e6, 4)
     except ImportError:
-        flops_m = None
+        flops_m = bops_m = iops_m = None
 
     # Wall-clock latency over a fixed 10k-sample slice.
     import time
@@ -125,8 +264,11 @@ def efficiency_metrics(model, X_test, y_test, input_dim):
 
     return {"Parameters": params,
             "FLOPs(M)": flops_m,
-            "IdealPayload(KB)": round(ideal_kb, 2),
-            "MeasuredPayload(KB)": round(measured_kb, 2),
+            "BOPs(M)": bops_m,
+            "IOPs(M)": iops_m,
+            "PackedPayload(KB)": round(packed_kb, 2),
+            "AnalyticPayload(KB)": round(analytic_kb, 2),
+            "Float32Payload(KB)": round(float32_kb, 2),
             "InfTime(ms)": inf_ms}
 
 
@@ -134,7 +276,35 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--models", nargs="+",
                         default=list(MODEL_REGISTRY.keys()))
+    parser.add_argument("--suffix", default="final", choices=["final", "best"],
+                        help="evaluate the last round's weights (_final.pt, "
+                             "written whenever training completes) or the "
+                             "best-accuracy round's weights (_best.pt, only "
+                             "present for runs made after federated_train.py "
+                             "started saving it separately)")
+    parser.add_argument("--seed", type=int, default=42,
+                        help="seed of the run being evaluated. Checkpoints are "
+                             "named by run_tag(), i.e. "
+                             "{model}_seed{seed}_{suffix}.pt, so this has to "
+                             "match the seed the run was trained with. Pass a "
+                             "negative value for checkpoints written without "
+                             "any seed tag.")
+    parser.add_argument("--class-weighted", action="store_true",
+                        help="evaluate the class-weighted variant of the run "
+                             "({model}_cw_seed{seed}_{suffix}.pt)")
+    parser.add_argument("--partition", default="iid",
+                        choices=["iid", "dirichlet"],
+                        help="evaluate the run trained with this client "
+                             "partition -- must match how it was trained")
+    parser.add_argument("--alpha", type=float, default=0.5,
+                        help="Dirichlet alpha of the run being evaluated, "
+                             "only used with --partition dirichlet, must "
+                             "match the value it was trained with")
+    parser.add_argument("--aggregator", default="fedavg",
+                        choices=["fedavg", "fedprox", "signsgd", "signsgd5", "signsgdlat", "signsgdlat5", "signsgdlat1"])
     args = parser.parse_args()
+
+    seed = None if args.seed < 0 else args.seed
 
     X_test = np.load(os.path.join(DATA_DIR, "X_test.npy"))
     y_test = np.load(os.path.join(DATA_DIR, "y_test.npy"))
@@ -143,7 +313,9 @@ def main():
 
     rows = []
     for name in args.models:
-        ckpt = os.path.join(RUN_DIR, f"{name}_final.pt")
+        tag = run_tag(name, args.class_weighted, seed,
+                      args.partition, args.alpha, args.aggregator)
+        ckpt = os.path.join(RUN_DIR, f"{tag}_{args.suffix}.pt")
         if not os.path.exists(ckpt):
             print(f"Skipping {name}: {ckpt} not found")
             continue
@@ -165,9 +337,18 @@ def main():
         import pandas as pd
         df = pd.DataFrame(rows)
         os.makedirs(RUN_DIR, exist_ok=True)
-        df.to_csv(os.path.join(RUN_DIR, "results.csv"), index=False)
+        # Dirichlet results get their own file (results_best_dir0.1.csv,
+        # etc.) so a non-IID pass never overwrites the IID
+        # results_{suffix}.csv that main.tex's tables are built from.
+        csv_suffix = (f"_dir{args.alpha}"
+                     if args.partition == "dirichlet" else "")
+        if args.aggregator != "fedavg":
+            csv_suffix = f"_{args.aggregator}" + csv_suffix
+        out_csv = os.path.join(RUN_DIR,
+                               f"results_{args.suffix}{csv_suffix}.csv")
+        df.to_csv(out_csv, index=False)
         print("\n" + df.to_string(index=False))
-        print(f"\nSaved to {os.path.join(RUN_DIR, 'results.csv')}")
+        print(f"\nSaved to {out_csv}")
 
 
 if __name__ == "__main__":

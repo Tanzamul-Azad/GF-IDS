@@ -1,0 +1,759 @@
+{
+ "run_id": "MLP-INT8_iid_s44_ea0a61c56e",
+ "config": {
+  "dataset": "nfton",
+  "model": "MLP-INT8",
+  "seed": 44,
+  "split_seed": 44,
+  "clients": 5,
+  "rounds": 45,
+  "epochs": 5,
+  "batch_size": 256,
+  "lr": 0.0005,
+  "lr_decay": 1.0,
+  "lr_min": 1e-06,
+  "val_fraction": 0.2,
+  "partition": "iid",
+  "alpha": null,
+  "aggregator": "fedavg",
+  "mu": 0.01,
+  "server_lr": 1.0,
+  "init_broadcast": "float",
+  "class_weight": "sqrt",
+  "data_sha256": {
+   "X_train.npy": "687bd046610de9bd102013a9417c94e492f9ed2d5400363e1a2e6696dde0d033",
+   "y_train.npy": "03e0084b5bc63c3927353fbcf50dd4f77416355dcd6b54dd433d6377048cf53e"
+  }
+ },
+ "done": {
+  "best": {
+   "round": 44,
+   "val_accuracy": 0.9108670679593805,
+   "val_macro_f1": 0.7134771478118582,
+   "val_loss": 0.27389245364933623,
+   "val_benign_far": 0.08438023450586264
+  },
+  "rounds": 45,
+  "finished": "2026-10-02 14:53:02"
+ },
+ "best_down_bytes": 18552,
+ "best_up_bytes": 62120,
+ "best/holdout": {
+  "n": 156823,
+  "accuracy": 0.9231554045006154,
+  "macro_f1": 0.7625260718385165,
+  "macro_precision": 0.758974823415555,
+  "macro_recall": 0.7835707304747459,
+  "mcc": 0.9034713830837571,
+  "macro_fpr": 0.009088006474365294,
+  "benign_far": 0.08666365751189195,
+  "attack_miss_rate": 0.0055146771648622896,
+  "attack_recall": 0.9944853228351377,
+  "n_benign": 28801,
+  "n_attack": 128022,
+  "zero_recall_classes": [],
+  "per_class": {
+   "Benign": {
+    "support": 28801,
+    "precision": 0.9738625004627744,
+    "recall": 0.913336342488108,
+    "f1": 0.9426288253422203,
+    "predicted_benign_share": 0.913336342488108
+   },
+   "backdoor": {
+    "support": 7,
+    "precision": 0.2857142857142857,
+    "recall": 0.5714285714285714,
+    "f1": 0.38095238095238093,
+    "predicted_benign_share": 0.2857142857142857
+   },
+   "ddos": {
+    "support": 11607,
+    "precision": 0.946826453617399,
+    "recall": 0.9189282329628672,
+    "f1": 0.9326687653025534,
+    "predicted_benign_share": 0.002670802102179719
+   },
+   "dos": {
+    "support": 14673,
+    "precision": 0.8858937450929076,
+    "recall": 0.9227833435561916,
+    "f1": 0.9039623460293087,
+    "predicted_benign_share": 0.004293600490697199
+   },
+   "injection": {
+    "support": 6735,
+    "precision": 0.6196509009009009,
+    "recall": 0.6536005939123979,
+    "f1": 0.6361731338969578,
+    "predicted_benign_share": 0.002524127691165553
+   },
+   "mitm": {
+    "support": 165,
+    "precision": 0.5416666666666666,
+    "recall": 0.3151515151515151,
+    "f1": 0.39846743295019155,
+    "predicted_benign_share": 0.09696969696969697
+   },
+   "password": {
+    "support": 8973,
+    "precision": 0.8074260541220893,
+    "recall": 0.8579070544968238,
+    "f1": 0.8319014426973578,
+    "predicted_benign_share": 0.001671681711802073
+   },
+   "ransomware": {
+    "support": 36,
+    "precision": 0.6363636363636364,
+    "recall": 0.7777777777777778,
+    "f1": 0.7,
+    "predicted_benign_share": 0.08333333333333333
+   },
+   "scanning": {
+    "support": 48183,
+    "precision": 0.9689862297225513,
+    "recall": 0.9843305730236805,
+    "f1": 0.9765981323806484,
+    "predicted_benign_share": 0.011061992819044061
+   },
+   "xss": {
+    "support": 37643,
+    "precision": 0.9233577614923384,
+    "recall": 0.9204632999495258,
+    "f1": 0.9219082588335462,
+    "predicted_benign_share": 0.000690699466036182
+   }
+  },
+  "roc_auc_macro_ovr": 0.957895018865832,
+  "roc_auc_micro": 0.996682894157608
+ },
+ "best/holdout_nonoverlap": {
+  "n": 90410,
+  "accuracy": 0.8960955646499281,
+  "macro_f1": 0.69902369951529,
+  "macro_precision": 0.7055165637899483,
+  "macro_recall": 0.7019142906957727,
+  "mcc": 0.869534055380236,
+  "macro_fpr": 0.012509503420841617,
+  "benign_far": 0.08250798722044729,
+  "attack_miss_rate": 0.007159247361174851,
+  "attack_recall": 0.9928407526388251,
+  "n_benign": 25040,
+  "n_attack": 65370,
+  "zero_recall_classes": [
+   "backdoor"
+  ],
+  "per_class": {
+   "Benign": {
+    "support": 25040,
+    "precision": 0.980035833120041,
+    "recall": 0.9174920127795527,
+    "f1": 0.9477331793242852,
+    "predicted_benign_share": 0.9174920127795527
+   },
+   "backdoor": {
+    "support": 1,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "predicted_benign_share": 1.0
+   },
+   "ddos": {
+    "support": 6558,
+    "precision": 0.940506735086594,
+    "recall": 0.894327538883806,
+    "f1": 0.9168360168829138,
+    "predicted_benign_share": 0.003964623360780726
+   },
+   "dos": {
+    "support": 11196,
+    "precision": 0.8535923318347612,
+    "recall": 0.8988031439799928,
+    "f1": 0.8756145312160104,
+    "predicted_benign_share": 0.005627009646302251
+   },
+   "injection": {
+    "support": 3883,
+    "precision": 0.5634965831435079,
+    "recall": 0.5096574813288695,
+    "f1": 0.5352265043948614,
+    "predicted_benign_share": 0.003347926860674736
+   },
+   "mitm": {
+    "support": 164,
+    "precision": 0.5473684210526316,
+    "recall": 0.3170731707317073,
+    "f1": 0.4015444015444015,
+    "predicted_benign_share": 0.09146341463414634
+   },
+   "password": {
+    "support": 5091,
+    "precision": 0.753193020327397,
+    "recall": 0.8224317422903162,
+    "f1": 0.7862910798122066,
+    "predicted_benign_share": 0.001571400510705166
+   },
+   "ransomware": {
+    "support": 18,
+    "precision": 0.6086956521739131,
+    "recall": 0.7777777777777778,
+    "f1": 0.6829268292682927,
+    "predicted_benign_share": 0.1111111111111111
+   },
+   "scanning": {
+    "support": 11725,
+    "precision": 0.9078088484164719,
+    "recall": 0.9607675906183369,
+    "f1": 0.9335377475760338,
+    "predicted_benign_share": 0.026865671641791045
+   },
+   "xss": {
+    "support": 26734,
+    "precision": 0.9004682127441657,
+    "recall": 0.9208124485673674,
+    "f1": 0.9105267051338956,
+    "predicted_benign_share": 0.0009351387745941497
+   }
+  },
+  "roc_auc_macro_ovr": 0.8828065939671704,
+  "roc_auc_micro": 0.9941431169696446
+ },
+ "best/dev_test": {
+  "n": 174827,
+  "accuracy": 0.9223918502290837,
+  "macro_f1": 0.7565695389367628,
+  "macro_precision": 0.7555547862354165,
+  "macro_recall": 0.7823164462911333,
+  "mcc": 0.9025444555581906,
+  "macro_fpr": 0.009201667704674567,
+  "benign_far": 0.09024443136404474,
+  "attack_miss_rate": 0.005275416000224486,
+  "attack_recall": 0.9947245839997755,
+  "n_benign": 32279,
+  "n_attack": 142548,
+  "zero_recall_classes": [],
+  "per_class": {
+   "Benign": {
+    "support": 32279,
+    "precision": 0.9750315425991102,
+    "recall": 0.9097555686359553,
+    "f1": 0.9412632017564947,
+    "predicted_benign_share": 0.9097555686359553
+   },
+   "backdoor": {
+    "support": 9,
+    "precision": 0.3,
+    "recall": 0.6666666666666666,
+    "f1": 0.41379310344827586,
+    "predicted_benign_share": 0.1111111111111111
+   },
+   "ddos": {
+    "support": 12932,
+    "precision": 0.9450899251949706,
+    "recall": 0.9183420971234147,
+    "f1": 0.9315240411012629,
+    "predicted_benign_share": 0.002551809464893288
+   },
+   "dos": {
+    "support": 16480,
+    "precision": 0.8845350052246604,
+    "recall": 0.9245752427184466,
+    "f1": 0.9041120275321901,
+    "predicted_benign_share": 0.003519417475728155
+   },
+   "injection": {
+    "support": 7626,
+    "precision": 0.630392788151964,
+    "recall": 0.6418830317335431,
+    "f1": 0.6360860242999156,
+    "predicted_benign_share": 0.004327301337529505
+   },
+   "mitm": {
+    "support": 212,
+    "precision": 0.5892857142857143,
+    "recall": 0.3113207547169811,
+    "f1": 0.4074074074074074,
+    "predicted_benign_share": 0.07075471698113207
+   },
+   "password": {
+    "support": 9829,
+    "precision": 0.8009478672985783,
+    "recall": 0.8597008851358225,
+    "f1": 0.8292850483340694,
+    "predicted_benign_share": 0.0010173974972021568
+   },
+   "ransomware": {
+    "support": 38,
+    "precision": 0.5416666666666666,
+    "recall": 0.6842105263157895,
+    "f1": 0.6046511627906976,
+    "predicted_benign_share": 0.23684210526315788
+   },
+   "scanning": {
+    "support": 53581,
+    "precision": 0.9667912909610732,
+    "recall": 0.9845280976465538,
+    "f1": 0.9755790836377086,
+    "predicted_benign_share": 0.010675425990556354
+   },
+   "xss": {
+    "support": 41841,
+    "precision": 0.9218070619714273,
+    "recall": 0.9221815922181592,
+    "f1": 0.9219942890596065,
+    "predicted_benign_share": 0.000501900050190005
+   }
+  },
+  "roc_auc_macro_ovr": 0.9698997418667246,
+  "roc_auc_micro": 0.9966270231176286
+ },
+ "best/dev_test_nonoverlap": {
+  "n": 101864,
+  "accuracy": 0.8939370140579597,
+  "macro_f1": 0.6954543779506315,
+  "macro_precision": 0.7002107162046232,
+  "macro_recall": 0.7364197861518246,
+  "mcc": 0.8670298938223682,
+  "macro_fpr": 0.012753173832677517,
+  "benign_far": 0.08489897199574618,
+  "attack_miss_rate": 0.007046460477367149,
+  "attack_recall": 0.9929535395226329,
+  "n_benign": 28210,
+  "n_attack": 73654,
+  "zero_recall_classes": [],
+  "per_class": {
+   "Benign": {
+    "support": 28210,
+    "precision": 0.980291638186375,
+    "recall": 0.9151010280042539,
+    "f1": 0.9465752420064535,
+    "predicted_benign_share": 0.9151010280042539
+   },
+   "backdoor": {
+    "support": 2,
+    "precision": 0.07142857142857142,
+    "recall": 0.5,
+    "f1": 0.125,
+    "predicted_benign_share": 0.0
+   },
+   "ddos": {
+    "support": 7464,
+    "precision": 0.9377021515961187,
+    "recall": 0.8933547695605574,
+    "f1": 0.914991423670669,
+    "predicted_benign_share": 0.0037513397642015005
+   },
+   "dos": {
+    "support": 12625,
+    "precision": 0.8530954879328436,
+    "recall": 0.9015445544554456,
+    "f1": 0.8766511341317826,
+    "predicted_benign_share": 0.004594059405940594
+   },
+   "injection": {
+    "support": 4636,
+    "precision": 0.5797244094488189,
+    "recall": 0.5081967213114754,
+    "f1": 0.5416091954022989,
+    "predicted_benign_share": 0.0060396893874029335
+   },
+   "mitm": {
+    "support": 211,
+    "precision": 0.5945945945945946,
+    "recall": 0.3127962085308057,
+    "f1": 0.40993788819875776,
+    "predicted_benign_share": 0.06635071090047394
+   },
+   "password": {
+    "support": 5599,
+    "precision": 0.7400449582530507,
+    "recall": 0.8231827111984283,
+    "f1": 0.7794030607931005,
+    "predicted_benign_share": 0.0010716199321307376
+   },
+   "ransomware": {
+    "support": 19,
+    "precision": 0.4444444444444444,
+    "recall": 0.631578947368421,
+    "f1": 0.5217391304347826,
+    "predicted_benign_share": 0.3157894736842105
+   },
+   "scanning": {
+    "support": 13168,
+    "precision": 0.9025593365742065,
+    "recall": 0.9587636695018226,
+    "f1": 0.9298129326852261,
+    "predicted_benign_share": 0.02726306196840826
+   },
+   "xss": {
+    "support": 29930,
+    "precision": 0.8982215695872083,
+    "recall": 0.9196792515870365,
+    "f1": 0.908823772183244,
+    "predicted_benign_share": 0.0006682258603407952
+   }
+  },
+  "roc_auc_macro_ovr": 0.9644484403060458,
+  "roc_auc_micro": 0.9939694440243665
+ },
+ "final_down_bytes": 18552,
+ "final_up_bytes": 62120,
+ "final/holdout": {
+  "n": 156823,
+  "accuracy": 0.9228620801795655,
+  "macro_f1": 0.7702052732613438,
+  "macro_precision": 0.7669843323162762,
+  "macro_recall": 0.7864617594731669,
+  "mcc": 0.9030966250611263,
+  "macro_fpr": 0.009130171377805965,
+  "benign_far": 0.08287906669907295,
+  "attack_miss_rate": 0.006780084672946838,
+  "attack_recall": 0.9932199153270531,
+  "n_benign": 28801,
+  "n_attack": 128022,
+  "zero_recall_classes": [],
+  "per_class": {
+   "Benign": {
+    "support": 28801,
+    "precision": 0.9681841507220879,
+    "recall": 0.917120933300927,
+    "f1": 0.9419610220565947,
+    "predicted_benign_share": 0.917120933300927
+   },
+   "backdoor": {
+    "support": 7,
+    "precision": 0.3333333333333333,
+    "recall": 0.5714285714285714,
+    "f1": 0.42105263157894735,
+    "predicted_benign_share": 0.2857142857142857
+   },
+   "ddos": {
+    "support": 11607,
+    "precision": 0.9487590072057646,
+    "recall": 0.9188420780563453,
+    "f1": 0.9335609243697479,
+    "predicted_benign_share": 0.0031015766347893513
+   },
+   "dos": {
+    "support": 14673,
+    "precision": 0.8893280632411067,
+    "recall": 0.9200572480065426,
+    "f1": 0.9044317154054868,
+    "predicted_benign_share": 0.004157295713214748
+   },
+   "injection": {
+    "support": 6735,
+    "precision": 0.6623951182303585,
+    "recall": 0.6446919079435783,
+    "f1": 0.6534236267870579,
+    "predicted_benign_share": 0.004305864884929473
+   },
+   "mitm": {
+    "support": 165,
+    "precision": 0.5533980582524272,
+    "recall": 0.34545454545454546,
+    "f1": 0.4253731343283582,
+    "predicted_benign_share": 0.07878787878787878
+   },
+   "password": {
+    "support": 8973,
+    "precision": 0.7710974643423137,
+    "recall": 0.8676028084252758,
+    "f1": 0.8165084692432745,
+    "predicted_benign_share": 0.002340354396522902
+   },
+   "ransomware": {
+    "support": 36,
+    "precision": 0.6511627906976745,
+    "recall": 0.7777777777777778,
+    "f1": 0.7088607594936709,
+    "predicted_benign_share": 0.08333333333333333
+   },
+   "scanning": {
+    "support": 48183,
+    "precision": 0.9705170291341814,
+    "recall": 0.9817362970342237,
+    "f1": 0.9760944254717663,
+    "predicted_benign_share": 0.014050598758898367
+   },
+   "xss": {
+    "support": 37643,
+    "precision": 0.9216683080035134,
+    "recall": 0.9199054273038813,
+    "f1": 0.9207860238785333,
+    "predicted_benign_share": 0.000690699466036182
+   }
+  },
+  "roc_auc_macro_ovr": 0.9581540642215692,
+  "roc_auc_micro": 0.9966673899050733
+ },
+ "final/holdout_nonoverlap": {
+  "n": 90410,
+  "accuracy": 0.895122220993253,
+  "macro_f1": 0.7024603601181416,
+  "macro_precision": 0.7097277104606878,
+  "macro_recall": 0.7039039216196509,
+  "mcc": 0.8682816511883348,
+  "macro_fpr": 0.012651057827347014,
+  "benign_far": 0.08043130990415336,
+  "attack_miss_rate": 0.008337157717607466,
+  "attack_recall": 0.9916628422823925,
+  "n_benign": 25040,
+  "n_attack": 65370,
+  "zero_recall_classes": [
+   "backdoor"
+  ],
+  "per_class": {
+   "Benign": {
+    "support": 25040,
+    "precision": 0.9768783674854694,
+    "recall": 0.9195686900958466,
+    "f1": 0.9473575939602148,
+    "predicted_benign_share": 0.9195686900958466
+   },
+   "backdoor": {
+    "support": 1,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "predicted_benign_share": 1.0
+   },
+   "ddos": {
+    "support": 6558,
+    "precision": 0.9429260450160771,
+    "recall": 0.894327538883806,
+    "f1": 0.9179840350602598,
+    "predicted_benign_share": 0.004727050930161634
+   },
+   "dos": {
+    "support": 11196,
+    "precision": 0.8577663671373555,
+    "recall": 0.8952304394426581,
+    "f1": 0.8760980726366855,
+    "predicted_benign_share": 0.005448374419435513
+   },
+   "injection": {
+    "support": 3883,
+    "precision": 0.5903946160905476,
+    "recall": 0.49703837239248005,
+    "f1": 0.5397091722595079,
+    "predicted_benign_share": 0.005408189544166882
+   },
+   "mitm": {
+    "support": 164,
+    "precision": 0.5643564356435643,
+    "recall": 0.3475609756097561,
+    "f1": 0.43018867924528303,
+    "predicted_benign_share": 0.07317073170731707
+   },
+   "password": {
+    "support": 5091,
+    "precision": 0.7197895451459606,
+    "recall": 0.8330386957375762,
+    "f1": 0.7722844395884548,
+    "predicted_benign_share": 0.0019642506383814574
+   },
+   "ransomware": {
+    "support": 18,
+    "precision": 0.6363636363636364,
+    "recall": 0.7777777777777778,
+    "f1": 0.7,
+    "predicted_benign_share": 0.1111111111111111
+   },
+   "scanning": {
+    "support": 11725,
+    "precision": 0.9099252761533463,
+    "recall": 0.9554797441364605,
+    "f1": 0.9321462744934892,
+    "predicted_benign_share": 0.03257995735607676
+   },
+   "xss": {
+    "support": 26734,
+    "precision": 0.8988768155709216,
+    "recall": 0.9190169821201466,
+    "f1": 0.9088353339375219,
+    "predicted_benign_share": 0.0009351387745941497
+   }
+  },
+  "roc_auc_macro_ovr": 0.883111300455457,
+  "roc_auc_micro": 0.9941264956599096
+ },
+ "final/dev_test": {
+  "n": 174827,
+  "accuracy": 0.9225977680793013,
+  "macro_f1": 0.7566569606863143,
+  "macro_precision": 0.7530578972779816,
+  "macro_recall": 0.7831717715586467,
+  "mcc": 0.9028008345232119,
+  "macro_fpr": 0.009171384821232937,
+  "benign_far": 0.08569038693887666,
+  "attack_miss_rate": 0.00624351095771249,
+  "attack_recall": 0.9937564890422875,
+  "n_benign": 32279,
+  "n_attack": 142548,
+  "zero_recall_classes": [],
+  "per_class": {
+   "Benign": {
+    "support": 32279,
+    "precision": 0.9707265730355557,
+    "recall": 0.9143096130611233,
+    "f1": 0.9416738457611435,
+    "predicted_benign_share": 0.9143096130611233
+   },
+   "backdoor": {
+    "support": 9,
+    "precision": 0.3,
+    "recall": 0.6666666666666666,
+    "f1": 0.41379310344827586,
+    "predicted_benign_share": 0.1111111111111111
+   },
+   "ddos": {
+    "support": 12932,
+    "precision": 0.9468314069350339,
+    "recall": 0.9184967522424993,
+    "f1": 0.932448875456294,
+    "predicted_benign_share": 0.0027064645839777295
+   },
+   "dos": {
+    "support": 16480,
+    "precision": 0.8872746367932784,
+    "recall": 0.922754854368932,
+    "f1": 0.9046670037776258,
+    "predicted_benign_share": 0.003337378640776699
+   },
+   "injection": {
+    "support": 7626,
+    "precision": 0.6674975765129484,
+    "recall": 0.6320482559664307,
+    "f1": 0.6492894187377921,
+    "predicted_benign_share": 0.005900865460267506
+   },
+   "mitm": {
+    "support": 212,
+    "precision": 0.5573770491803278,
+    "recall": 0.32075471698113206,
+    "f1": 0.40718562874251496,
+    "predicted_benign_share": 0.0660377358490566
+   },
+   "password": {
+    "support": 9829,
+    "precision": 0.7692446530096562,
+    "recall": 0.8672296266151185,
+    "f1": 0.8153036824485892,
+    "predicted_benign_share": 0.001627835995523451
+   },
+   "ransomware": {
+    "support": 38,
+    "precision": 0.5416666666666666,
+    "recall": 0.6842105263157895,
+    "f1": 0.6046511627906976,
+    "predicted_benign_share": 0.18421052631578946
+   },
+   "scanning": {
+    "support": 53581,
+    "precision": 0.9692372834551446,
+    "recall": 0.9825871111028163,
+    "f1": 0.9758665430954587,
+    "predicted_benign_share": 0.012933689180866351
+   },
+   "xss": {
+    "support": 41841,
+    "precision": 0.9207231271912042,
+    "recall": 0.9226595922659592,
+    "f1": 0.9216903426047511,
+    "predicted_benign_share": 0.0005736000573600057
+   }
+  },
+  "roc_auc_macro_ovr": 0.969699688705062,
+  "roc_auc_micro": 0.9966235936083776
+ },
+ "final/dev_test_nonoverlap": {
+  "n": 101864,
+  "accuracy": 0.8937308568287128,
+  "macro_f1": 0.6958643721353116,
+  "macro_precision": 0.6995671124195203,
+  "macro_recall": 0.7364745844861751,
+  "mcc": 0.8667516816490342,
+  "macro_fpr": 0.012790241448910406,
+  "benign_far": 0.082523927685218,
+  "attack_miss_rate": 0.007671002253781193,
+  "attack_recall": 0.9923289977462189,
+  "n_benign": 28210,
+  "n_attack": 73654,
+  "zero_recall_classes": [],
+  "per_class": {
+   "Benign": {
+    "support": 28210,
+    "precision": 0.9786365183196581,
+    "recall": 0.917476072314782,
+    "f1": 0.9470699087033683,
+    "predicted_benign_share": 0.917476072314782
+   },
+   "backdoor": {
+    "support": 2,
+    "precision": 0.07142857142857142,
+    "recall": 0.5,
+    "f1": 0.125,
+    "predicted_benign_share": 0.0
+   },
+   "ddos": {
+    "support": 7464,
+    "precision": 0.9399661781285231,
+    "recall": 0.8936227224008575,
+    "f1": 0.9162087912087912,
+    "predicted_benign_share": 0.003885316184351554
+   },
+   "dos": {
+    "support": 12625,
+    "precision": 0.8564961521050249,
+    "recall": 0.8991683168316832,
+    "f1": 0.8773136519958268,
+    "predicted_benign_share": 0.004356435643564357
+   },
+   "injection": {
+    "support": 4636,
+    "precision": 0.6014188124014713,
+    "recall": 0.49374460742018983,
+    "f1": 0.5422885572139303,
+    "predicted_benign_share": 0.007765314926660914
+   },
+   "mitm": {
+    "support": 211,
+    "precision": 0.5714285714285714,
+    "recall": 0.3222748815165877,
+    "f1": 0.4121212121212121,
+    "predicted_benign_share": 0.061611374407582936
+   },
+   "password": {
+    "support": 5599,
+    "precision": 0.7105343511450382,
+    "recall": 0.8312198606894088,
+    "f1": 0.7661535928883035,
+    "predicted_benign_share": 0.0012502232541525273
+   },
+   "ransomware": {
+    "support": 19,
+    "precision": 0.46153846153846156,
+    "recall": 0.631578947368421,
+    "f1": 0.5333333333333333,
+    "predicted_benign_share": 0.21052631578947367
+   },
+   "scanning": {
+    "support": 13168,
+    "precision": 0.9068712186689715,
+    "recall": 0.956181652490887,
+    "f1": 0.9308738725417715,
+    "predicted_benign_share": 0.030300729040097205
+   },
+   "xss": {
+    "support": 29930,
+    "precision": 0.8973522890309117,
+    "recall": 0.9194787838289342,
+    "f1": 0.9082808013465791,
+    "predicted_benign_share": 0.0007350484463748748
+   }
+  },
+  "roc_auc_macro_ovr": 0.9655104512368908,
+  "roc_auc_micro": 0.9939671055485797
+ }
+}
