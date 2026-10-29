@@ -42,8 +42,8 @@ def save(fig, out, name):
 
 
 def ablation(out):
-    runs = [("BNN-MATCHED_seed42", "BNN-FL (matched)", "#D55E00", "-", "o", 15746),
-            ("BNN_seed42", "BNN-FL, extra layer", "#E69F00", "--", "s", 32514),
+    runs = [("BNN-MATCHED_seed42", "GF-IDS (matched)", "#D55E00", "-", "o", 15746),
+            ("BNN_seed42", "GF-IDS, extra layer", "#E69F00", "--", "s", 32514),
             ("BNN-FULL_seed42", "Fully binary, larger", "#555555", ":", "^", 32514)]
     fig, (a, b) = plt.subplots(1, 2, figsize=(COL2, 2.35),
                                gridspec_kw={"width_ratios": [2.1, 1]})
@@ -76,7 +76,7 @@ def ablation(out):
 
 
 def bipru(out):
-    models = [("BNN-MATCHED_seed42", "BNN-FL", "#D55E00", 23.51),
+    models = [("BNN-MATCHED_seed42", "GF-IDS", "#D55E00", 23.51),
               ("BiPruneFL-Repro_seed42", "BiPruneFL\n(adapted)", "#E69F00", 63.76),
               ("MLP_seed42", "MLP-FL", "#0072B2", 63.76)]
     fig, (a, b) = plt.subplots(1, 2, figsize=(COL1, 2.25),

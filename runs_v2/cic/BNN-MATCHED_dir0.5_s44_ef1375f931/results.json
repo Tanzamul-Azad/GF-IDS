@@ -1,0 +1,2179 @@
+{
+ "run_id": "BNN-MATCHED_dir0.5_s44_ef1375f931",
+ "config": {
+  "dataset": "cic",
+  "model": "BNN-MATCHED",
+  "seed": 44,
+  "split_seed": 44,
+  "clients": 5,
+  "rounds": 45,
+  "epochs": 5,
+  "batch_size": 256,
+  "lr": 0.0005,
+  "lr_decay": 1.0,
+  "lr_min": 1e-06,
+  "val_fraction": 0.2,
+  "partition": "dirichlet",
+  "alpha": 0.5,
+  "aggregator": "fedavg",
+  "mu": 0.01,
+  "server_lr": 1.0,
+  "init_broadcast": "float",
+  "class_weight": "none",
+  "data_sha256": {
+   "X_train.npy": "8460cdb673071fff919ba099c0f532990a9949ebbcba0b5d9a84ad7b4dc48e64",
+   "y_train.npy": "df6fe7662be7753dadd1719cc26d83fb15cd0755095acb8c88d5babcc0a07287"
+  }
+ },
+ "done": {
+  "best": {
+   "round": 15,
+   "val_accuracy": 0.8961103442611782,
+   "val_macro_f1": 0.515439834647925,
+   "val_loss": 0.3146220362183161,
+   "val_benign_far": 0.012976736825447064
+  },
+  "rounds": 45,
+  "finished": "2026-10-29 12:56:32"
+ },
+ "best_down_bytes": 24072,
+ "best_up_bytes": 63752,
+ "best/holdout": {
+  "n": 1170554,
+  "accuracy": 0.8960253008404567,
+  "macro_f1": 0.5145444752175731,
+  "macro_precision": 0.5871553653963761,
+  "macro_recall": 0.5082281990910336,
+  "mcc": 0.8883063150139283,
+  "macro_fpr": 0.0033069947507597263,
+  "benign_far": 0.012414649286157667,
+  "attack_miss_rate": 0.013848370360585987,
+  "attack_recall": 0.986151629639414,
+  "n_benign": 27387,
+  "n_attack": 1143167,
+  "zero_recall_classes": [
+   "Backdoor_Malware",
+   "BrowserHijacking",
+   "CommandInjection",
+   "DDoS-HTTP_Flood",
+   "Recon-PingSweep",
+   "Recon-PortScan",
+   "SqlInjection",
+   "Uploading_Attack",
+   "XSS"
+  ],
+  "per_class": {
+   "Backdoor_Malware": {
+    "support": 93,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "predicted_benign_share": 0.9354838709677419
+   },
+   "BenignTraffic": {
+    "support": 27387,
+    "precision": 0.6307896823545874,
+    "recall": 0.9875853507138423,
+    "f1": 0.769856970041984,
+    "predicted_benign_share": 0.9875853507138423
+   },
+   "BrowserHijacking": {
+    "support": 157,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "predicted_benign_share": 0.9681528662420382
+   },
+   "CommandInjection": {
+    "support": 132,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "predicted_benign_share": 0.9242424242424242
+   },
+   "DDoS-ACK_Fragmentation": {
+    "support": 7154,
+    "precision": 0.9108804098692194,
+    "recall": 0.9443667878110148,
+    "f1": 0.9273213918056413,
+    "predicted_benign_share": 0.0019569471624266144
+   },
+   "DDoS-HTTP_Flood": {
+    "support": 701,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "predicted_benign_share": 0.0
+   },
+   "DDoS-ICMP_Flood": {
+    "support": 181022,
+    "precision": 0.9964786403914826,
+    "recall": 0.9989117344853112,
+    "f1": 0.9976937040327075,
+    "predicted_benign_share": 9.391123730817249e-05
+   },
+   "DDoS-ICMP_Fragmentation": {
+    "support": 11368,
+    "precision": 0.9876499015571863,
+    "recall": 0.9707952146375791,
+    "f1": 0.9791500310531452,
+    "predicted_benign_share": 0.0004398311048557354
+   },
+   "DDoS-PSHACK_Flood": {
+    "support": 102457,
+    "precision": 0.9988488980183184,
+    "recall": 0.9824316542549557,
+    "f1": 0.9905722580327707,
+    "predicted_benign_share": 9.760192080580147e-06
+   },
+   "DDoS-RSTFINFlood": {
+    "support": 101022,
+    "precision": 0.9980910367747423,
+    "recall": 0.9988814317673378,
+    "f1": 0.998486077853199,
+    "predicted_benign_share": 4.949416958682267e-05
+   },
+   "DDoS-SYN_Flood": {
+    "support": 102082,
+    "precision": 0.993817600322341,
+    "recall": 0.7731823436061206,
+    "f1": 0.8697252356736327,
+    "predicted_benign_share": 1.959209263141396e-05
+   },
+   "DDoS-SlowLoris": {
+    "support": 617,
+    "precision": 0.3661417322834646,
+    "recall": 0.1507293354943274,
+    "f1": 0.21354764638346727,
+    "predicted_benign_share": 0.009724473257698542
+   },
+   "DDoS-SynonymousIP_Flood": {
+    "support": 90320,
+    "precision": 0.9615639709028669,
+    "recall": 0.9952059344552702,
+    "f1": 0.9780957562568009,
+    "predicted_benign_share": 2.2143489813994687e-05
+   },
+   "DDoS-TCP_Flood": {
+    "support": 113276,
+    "precision": 0.9756332561929889,
+    "recall": 0.9564868109749638,
+    "f1": 0.9659651672320565,
+    "predicted_benign_share": 0.00010593594406582154
+   },
+   "DDoS-UDP_Flood": {
+    "support": 135736,
+    "precision": 0.7129815079743549,
+    "recall": 0.9913434903047091,
+    "f1": 0.82943051043869,
+    "predicted_benign_share": 3.6836211469322804e-05
+   },
+   "DDoS-UDP_Fragmentation": {
+    "support": 7183,
+    "precision": 0.9899745834510025,
+    "recall": 0.9760545732980649,
+    "f1": 0.9829652996845426,
+    "predicted_benign_share": 0.0008353055826256439
+   },
+   "DNS_Spoofing": {
+    "support": 4545,
+    "precision": 0.3987813134732566,
+    "recall": 0.1295929592959296,
+    "f1": 0.19561607439388906,
+    "predicted_benign_share": 0.8121012101210121
+   },
+   "DictionaryBruteForce": {
+    "support": 288,
+    "precision": 1.0,
+    "recall": 0.1111111111111111,
+    "f1": 0.2,
+    "predicted_benign_share": 0.8020833333333334
+   },
+   "DoS-HTTP_Flood": {
+    "support": 1817,
+    "precision": 0.6836007130124777,
+    "recall": 0.4221243808475509,
+    "f1": 0.5219462402177611,
+    "predicted_benign_share": 0.00275178866263071
+   },
+   "DoS-SYN_Flood": {
+    "support": 50833,
+    "precision": 0.7133211889891279,
+    "recall": 0.9706096433419236,
+    "f1": 0.8223098140848826,
+    "predicted_benign_share": 1.967226014596817e-05
+   },
+   "DoS-TCP_Flood": {
+    "support": 66689,
+    "precision": 0.9070892615523392,
+    "recall": 0.9952016074615004,
+    "f1": 0.9491047935018877,
+    "predicted_benign_share": 0.0001499497668281126
+   },
+   "DoS-UDP_Flood": {
+    "support": 82965,
+    "precision": 0.9555239575410867,
+    "recall": 0.3482914482010486,
+    "f1": 0.5105029768740172,
+    "predicted_benign_share": 1.205327547761104e-05
+   },
+   "MITM-ArpSpoofing": {
+    "support": 7703,
+    "precision": 0.9520089285714286,
+    "recall": 0.11073607685317409,
+    "f1": 0.19839516222816606,
+    "predicted_benign_share": 0.7621705828897832
+   },
+   "Mirai-greeth_flood": {
+    "support": 24803,
+    "precision": 0.80785606372751,
+    "recall": 0.7114461960246744,
+    "f1": 0.75659220511941,
+    "predicted_benign_share": 8.063540700721687e-05
+   },
+   "Mirai-greip_flood": {
+    "support": 18765,
+    "precision": 0.6719988871887606,
+    "recall": 0.7723421262989608,
+    "f1": 0.7186849152038084,
+    "predicted_benign_share": 0.00037303490540900613
+   },
+   "Mirai-udpplain": {
+    "support": 22199,
+    "precision": 0.9927555917775966,
+    "recall": 0.9877021487454389,
+    "f1": 0.9902224229423056,
+    "predicted_benign_share": 0.00022523537096265597
+   },
+   "Recon-HostDiscovery": {
+    "support": 3466,
+    "precision": 0.4706827309236948,
+    "recall": 0.3381419503750721,
+    "f1": 0.39355271994627267,
+    "predicted_benign_share": 0.585401038661281
+   },
+   "Recon-OSScan": {
+    "support": 2488,
+    "precision": 0.2111368909512761,
+    "recall": 0.07315112540192927,
+    "f1": 0.10865671641791044,
+    "predicted_benign_share": 0.7664790996784566
+   },
+   "Recon-PingSweep": {
+    "support": 45,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "predicted_benign_share": 0.8
+   },
+   "Recon-PortScan": {
+    "support": 2070,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "predicted_benign_share": 0.6603864734299517
+   },
+   "SqlInjection": {
+    "support": 146,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "predicted_benign_share": 0.815068493150685
+   },
+   "Uploading_Attack": {
+    "support": 35,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "predicted_benign_share": 0.9142857142857143
+   },
+   "VulnerabilityScan": {
+    "support": 900,
+    "precision": 0.6756756756756757,
+    "recall": 0.5833333333333334,
+    "f1": 0.6261180679785331,
+    "predicted_benign_share": 0.0
+   },
+   "XSS": {
+    "support": 90,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "predicted_benign_share": 0.9
+   }
+  },
+  "roc_auc_macro_ovr": 0.9923829428813081,
+  "roc_auc_micro": 0.9984117532067851
+ },
+ "best/holdout_nonoverlap": {
+  "n": 1165171,
+  "accuracy": 0.8956093139976878,
+  "macro_f1": 0.5144714260887435,
+  "macro_precision": 0.5871499102219669,
+  "macro_recall": 0.5081257761252427,
+  "mcc": 0.8879271399468674,
+  "macro_fpr": 0.003321464171242543,
+  "benign_far": 0.012422814132777961,
+  "attack_miss_rate": 0.013899606434159897,
+  "attack_recall": 0.9861003935658401,
+  "n_benign": 27369,
+  "n_attack": 1137802,
+  "zero_recall_classes": [
+   "Backdoor_Malware",
+   "BrowserHijacking",
+   "CommandInjection",
+   "DDoS-HTTP_Flood",
+   "Recon-PingSweep",
+   "Recon-PortScan",
+   "SqlInjection",
+   "Uploading_Attack",
+   "XSS"
+  ],
+  "per_class": {
+   "Backdoor_Malware": {
+    "support": 93,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "predicted_benign_share": 0.9354838709677419
+   },
+   "BenignTraffic": {
+    "support": 27369,
+    "precision": 0.630870133507609,
+    "recall": 0.987577185867222,
+    "f1": 0.7699144033156253,
+    "predicted_benign_share": 0.987577185867222
+   },
+   "BrowserHijacking": {
+    "support": 156,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "predicted_benign_share": 0.967948717948718
+   },
+   "CommandInjection": {
+    "support": 131,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "predicted_benign_share": 0.9236641221374046
+   },
+   "DDoS-ACK_Fragmentation": {
+    "support": 7142,
+    "precision": 0.9107359891964889,
+    "recall": 0.9442733127975357,
+    "f1": 0.9272014848422355,
+    "predicted_benign_share": 0.0019602352282273874
+   },
+   "DDoS-HTTP_Flood": {
+    "support": 700,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "predicted_benign_share": 0.0
+   },
+   "DDoS-ICMP_Flood": {
+    "support": 176244,
+    "precision": 0.9963834146451898,
+    "recall": 0.9988822314518508,
+    "f1": 0.9976312583231802,
+    "predicted_benign_share": 9.645718435804906e-05
+   },
+   "DDoS-ICMP_Fragmentation": {
+    "support": 11342,
+    "precision": 0.9876222082698,
+    "recall": 0.9708164344912714,
+    "f1": 0.9791472144413321,
+    "predicted_benign_share": 0.00044083935813789456
+   },
+   "DDoS-PSHACK_Flood": {
+    "support": 102457,
+    "precision": 0.9988488980183184,
+    "recall": 0.9824316542549557,
+    "f1": 0.9905722580327707,
+    "predicted_benign_share": 9.760192080580147e-06
+   },
+   "DDoS-RSTFINFlood": {
+    "support": 101017,
+    "precision": 0.9980909612455241,
+    "recall": 0.9988912757258679,
+    "f1": 0.9984909581179032,
+    "predicted_benign_share": 4.9496619380896285e-05
+   },
+   "DDoS-SYN_Flood": {
+    "support": 102074,
+    "precision": 0.9938300363901935,
+    "recall": 0.7732331445813821,
+    "f1": 0.8697621369654693,
+    "predicted_benign_share": 1.959362815212493e-05
+   },
+   "DDoS-SlowLoris": {
+    "support": 616,
+    "precision": 0.36904761904761907,
+    "recall": 0.15097402597402598,
+    "f1": 0.21428571428571427,
+    "predicted_benign_share": 0.00974025974025974
+   },
+   "DDoS-SynonymousIP_Flood": {
+    "support": 90320,
+    "precision": 0.9615639709028669,
+    "recall": 0.9952059344552702,
+    "f1": 0.9780957562568009,
+    "predicted_benign_share": 2.2143489813994687e-05
+   },
+   "DDoS-TCP_Flood": {
+    "support": 113269,
+    "precision": 0.9756492921724722,
+    "recall": 0.9564841218691786,
+    "f1": 0.9659716556775577,
+    "predicted_benign_share": 0.00010594249088453152
+   },
+   "DDoS-UDP_Flood": {
+    "support": 135735,
+    "precision": 0.7129815079743549,
+    "recall": 0.9913507938262055,
+    "f1": 0.8294330667406346,
+    "predicted_benign_share": 3.6836482852617235e-05
+   },
+   "DDoS-UDP_Fragmentation": {
+    "support": 7179,
+    "precision": 0.9899689177733824,
+    "recall": 0.9760412313692715,
+    "f1": 0.9829557410394894,
+    "predicted_benign_share": 0.0008357709987463436
+   },
+   "DNS_Spoofing": {
+    "support": 4543,
+    "precision": 0.3987813134732566,
+    "recall": 0.1296500110059432,
+    "f1": 0.19568106312292358,
+    "predicted_benign_share": 0.8120184899845917
+   },
+   "DictionaryBruteForce": {
+    "support": 288,
+    "precision": 1.0,
+    "recall": 0.1111111111111111,
+    "f1": 0.2,
+    "predicted_benign_share": 0.8020833333333334
+   },
+   "DoS-HTTP_Flood": {
+    "support": 1814,
+    "precision": 0.6830357142857143,
+    "recall": 0.4217199558985667,
+    "f1": 0.5214723926380368,
+    "predicted_benign_share": 0.0027563395810363835
+   },
+   "DoS-SYN_Flood": {
+    "support": 50826,
+    "precision": 0.7133643751626804,
+    "recall": 0.9706055955613269,
+    "f1": 0.8223370561760294,
+    "predicted_benign_share": 1.967496950379727e-05
+   },
+   "DoS-TCP_Flood": {
+    "support": 66685,
+    "precision": 0.9070965801919029,
+    "recall": 0.9952013196370998,
+    "f1": 0.9491086687594299,
+    "predicted_benign_share": 0.00014995876134063133
+   },
+   "DoS-UDP_Flood": {
+    "support": 82960,
+    "precision": 0.955579810809023,
+    "recall": 0.34825216972034717,
+    "f1": 0.510468752760747,
+    "predicted_benign_share": 1.2054001928640309e-05
+   },
+   "MITM-ArpSpoofing": {
+    "support": 7697,
+    "precision": 0.9520089285714286,
+    "recall": 0.11082239833701442,
+    "f1": 0.19853369021296405,
+    "predicted_benign_share": 0.7619851890346888
+   },
+   "Mirai-greeth_flood": {
+    "support": 24395,
+    "precision": 0.8047701122653375,
+    "recall": 0.7081779053084648,
+    "f1": 0.753390606602416,
+    "predicted_benign_share": 8.19840131174421e-05
+   },
+   "Mirai-greip_flood": {
+    "support": 18726,
+    "precision": 0.6726519979532027,
+    "recall": 0.7721884011534764,
+    "f1": 0.7189916217089725,
+    "predicted_benign_share": 0.00037381181245327354
+   },
+   "Mirai-udpplain": {
+    "support": 22161,
+    "precision": 0.9927434350764207,
+    "recall": 0.9877261856414422,
+    "f1": 0.9902284551006559,
+    "predicted_benign_share": 0.00022562158747348947
+   },
+   "Recon-HostDiscovery": {
+    "support": 3463,
+    "precision": 0.47065916398713825,
+    "recall": 0.33814611608431994,
+    "f1": 0.39354730297429,
+    "predicted_benign_share": 0.5853306381749928
+   },
+   "Recon-OSScan": {
+    "support": 2487,
+    "precision": 0.2111368909512761,
+    "recall": 0.0731805388017692,
+    "f1": 0.10868916094356525,
+    "predicted_benign_share": 0.7663852030558906
+   },
+   "Recon-PingSweep": {
+    "support": 45,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "predicted_benign_share": 0.8
+   },
+   "Recon-PortScan": {
+    "support": 2066,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "predicted_benign_share": 0.6602129719264279
+   },
+   "SqlInjection": {
+    "support": 146,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "predicted_benign_share": 0.815068493150685
+   },
+   "Uploading_Attack": {
+    "support": 35,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "predicted_benign_share": 0.9142857142857143
+   },
+   "VulnerabilityScan": {
+    "support": 900,
+    "precision": 0.6756756756756757,
+    "recall": 0.5833333333333334,
+    "f1": 0.6261180679785331,
+    "predicted_benign_share": 0.0
+   },
+   "XSS": {
+    "support": 90,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "predicted_benign_share": 0.9
+   }
+  },
+  "roc_auc_macro_ovr": 0.9923507794497406,
+  "roc_auc_micro": 0.9983999776198473
+ },
+ "best/dev_test": {
+  "n": 1170467,
+  "accuracy": 0.895594664351921,
+  "macro_f1": 0.5165080647310751,
+  "macro_precision": 0.5881811322605535,
+  "macro_recall": 0.5092431582760266,
+  "mcc": 0.8878767206912471,
+  "macro_fpr": 0.003321394908176723,
+  "benign_far": 0.01316600776177868,
+  "attack_miss_rate": 0.013985524492167266,
+  "attack_recall": 0.9860144755078327,
+  "n_benign": 27571,
+  "n_attack": 1142896,
+  "zero_recall_classes": [
+   "Backdoor_Malware",
+   "BrowserHijacking",
+   "CommandInjection",
+   "DDoS-HTTP_Flood",
+   "Recon-PingSweep",
+   "Recon-PortScan",
+   "SqlInjection",
+   "Uploading_Attack",
+   "XSS"
+  ],
+  "per_class": {
+   "Backdoor_Malware": {
+    "support": 88,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "predicted_benign_share": 0.8409090909090909
+   },
+   "BenignTraffic": {
+    "support": 27571,
+    "precision": 0.6299314687905168,
+    "recall": 0.9868339922382213,
+    "f1": 0.7689894436357984,
+    "predicted_benign_share": 0.9868339922382213
+   },
+   "BrowserHijacking": {
+    "support": 133,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "predicted_benign_share": 0.924812030075188
+   },
+   "CommandInjection": {
+    "support": 118,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "predicted_benign_share": 0.9152542372881356
+   },
+   "DDoS-ACK_Fragmentation": {
+    "support": 7262,
+    "precision": 0.9134602582878445,
+    "recall": 0.9447810520517763,
+    "f1": 0.9288566980301902,
+    "predicted_benign_share": 0.0024786560176259984
+   },
+   "DDoS-HTTP_Flood": {
+    "support": 707,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "predicted_benign_share": 0.0
+   },
+   "DDoS-ICMP_Flood": {
+    "support": 179501,
+    "precision": 0.9963322737679774,
+    "recall": 0.9988133770842502,
+    "f1": 0.9975712827132639,
+    "predicted_benign_share": 0.00012813299090255764
+   },
+   "DDoS-ICMP_Fragmentation": {
+    "support": 11339,
+    "precision": 0.9870875179340028,
+    "recall": 0.9708087132904136,
+    "f1": 0.978880441065315,
+    "predicted_benign_share": 0.00044095599259193934
+   },
+   "DDoS-PSHACK_Flood": {
+    "support": 102790,
+    "precision": 0.9988321341264265,
+    "recall": 0.981817297402471,
+    "f1": 0.9902516324958667,
+    "predicted_benign_share": 2.9185718455102637e-05
+   },
+   "DDoS-RSTFINFlood": {
+    "support": 101251,
+    "precision": 0.9983123945246578,
+    "recall": 0.9990617376618502,
+    "f1": 0.9986869255299193,
+    "predicted_benign_share": 0.0
+   },
+   "DDoS-SYN_Flood": {
+    "support": 101651,
+    "precision": 0.9933893089168344,
+    "recall": 0.7716697327129098,
+    "f1": 0.8686037627204979,
+    "predicted_benign_share": 9.83758152895692e-06
+   },
+   "DDoS-SlowLoris": {
+    "support": 618,
+    "precision": 0.4068441064638783,
+    "recall": 0.17313915857605178,
+    "f1": 0.24290578887627695,
+    "predicted_benign_share": 0.011326860841423949
+   },
+   "DDoS-SynonymousIP_Flood": {
+    "support": 89987,
+    "precision": 0.9603037551081699,
+    "recall": 0.9949437140920355,
+    "f1": 0.9773168868027508,
+    "predicted_benign_share": 0.0
+   },
+   "DDoS-TCP_Flood": {
+    "support": 113089,
+    "precision": 0.9750509073216441,
+    "recall": 0.9569188868943929,
+    "f1": 0.9658998103313623,
+    "predicted_benign_share": 5.305555801183139e-05
+   },
+   "DDoS-UDP_Flood": {
+    "support": 135977,
+    "precision": 0.7127986501568293,
+    "recall": 0.9910573111629173,
+    "f1": 0.8292066109600167,
+    "predicted_benign_share": 7.354184898916728e-06
+   },
+   "DDoS-UDP_Fragmentation": {
+    "support": 7192,
+    "precision": 0.9912725225225225,
+    "recall": 0.9791434927697441,
+    "f1": 0.985170677112479,
+    "predicted_benign_share": 0.0008342602892102336
+   },
+   "DNS_Spoofing": {
+    "support": 4543,
+    "precision": 0.38081603435934147,
+    "recall": 0.11710323574730354,
+    "f1": 0.17912457912457913,
+    "predicted_benign_share": 0.8230244331939247
+   },
+   "DictionaryBruteForce": {
+    "support": 317,
+    "precision": 1.0,
+    "recall": 0.15457413249211358,
+    "f1": 0.2677595628415301,
+    "predicted_benign_share": 0.7602523659305994
+   },
+   "DoS-HTTP_Flood": {
+    "support": 1784,
+    "precision": 0.6948228882833788,
+    "recall": 0.4288116591928251,
+    "f1": 0.5303292894280762,
+    "predicted_benign_share": 0.0
+   },
+   "DoS-SYN_Flood": {
+    "support": 50807,
+    "precision": 0.7119981501286239,
+    "recall": 0.9696695337256678,
+    "f1": 0.8210931575570204,
+    "predicted_benign_share": 0.0
+   },
+   "DoS-TCP_Flood": {
+    "support": 67323,
+    "precision": 0.9079512651280036,
+    "recall": 0.9951279651827756,
+    "f1": 0.9495429097866912,
+    "predicted_benign_share": 8.9122588119959e-05
+   },
+   "DoS-UDP_Flood": {
+    "support": 83173,
+    "precision": 0.9549008610735377,
+    "recall": 0.3479975472809686,
+    "f1": 0.5100983398540764,
+    "predicted_benign_share": 4.8092530027773434e-05
+   },
+   "MITM-ArpSpoofing": {
+    "support": 7803,
+    "precision": 0.9485981308411215,
+    "recall": 0.10406254004869922,
+    "f1": 0.18755052546483428,
+    "predicted_benign_share": 0.7757272843778034
+   },
+   "Mirai-greeth_flood": {
+    "support": 24798,
+    "precision": 0.8062844036697248,
+    "recall": 0.7088071618678926,
+    "f1": 0.7544100605176188,
+    "predicted_benign_share": 0.0
+   },
+   "Mirai-greip_flood": {
+    "support": 19171,
+    "precision": 0.6769125683060109,
+    "recall": 0.7753899118460175,
+    "f1": 0.7228124772069728,
+    "predicted_benign_share": 0.00026081059934275727
+   },
+   "Mirai-udpplain": {
+    "support": 22433,
+    "precision": 0.9936325725303798,
+    "recall": 0.9877858512013551,
+    "f1": 0.990700585684267,
+    "predicted_benign_share": 0.00017830874158605625
+   },
+   "Recon-HostDiscovery": {
+    "support": 3304,
+    "precision": 0.44553191489361704,
+    "recall": 0.31688861985472155,
+    "f1": 0.37035726918995404,
+    "predicted_benign_share": 0.6050242130750605
+   },
+   "Recon-OSScan": {
+    "support": 2421,
+    "precision": 0.22249388753056235,
+    "recall": 0.0751755472945064,
+    "f1": 0.11238036430997221,
+    "predicted_benign_share": 0.7591904171829822
+   },
+   "Recon-PingSweep": {
+    "support": 53,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "predicted_benign_share": 0.7735849056603774
+   },
+   "Recon-PortScan": {
+    "support": 2074,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "predicted_benign_share": 0.6899710703953713
+   },
+   "SqlInjection": {
+    "support": 147,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "predicted_benign_share": 0.8571428571428571
+   },
+   "Uploading_Attack": {
+    "support": 33,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "predicted_benign_share": 0.9090909090909091
+   },
+   "VulnerabilityScan": {
+    "support": 906,
+    "precision": 0.6906005221932114,
+    "recall": 0.5838852097130243,
+    "f1": 0.6327751196172249,
+    "predicted_benign_share": 0.0
+   },
+   "XSS": {
+    "support": 103,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "predicted_benign_share": 0.8932038834951457
+   }
+  },
+  "roc_auc_macro_ovr": 0.9923928385267625,
+  "roc_auc_micro": 0.9984052034861519
+ },
+ "best/dev_test_nonoverlap": {
+  "n": 1112620,
+  "accuracy": 0.895489025902824,
+  "macro_f1": 0.5166122198072552,
+  "macro_precision": 0.5881432140573774,
+  "macro_recall": 0.5093220258284061,
+  "mcc": 0.8877627011132901,
+  "macro_fpr": 0.003324563470549877,
+  "benign_far": 0.0131548844657973,
+  "attack_miss_rate": 0.014013332179669623,
+  "attack_recall": 0.9859866678203304,
+  "n_benign": 26226,
+  "n_attack": 1086394,
+  "zero_recall_classes": [
+   "Backdoor_Malware",
+   "BrowserHijacking",
+   "CommandInjection",
+   "DDoS-HTTP_Flood",
+   "Recon-PingSweep",
+   "Recon-PortScan",
+   "SqlInjection",
+   "Uploading_Attack",
+   "XSS"
+  ],
+  "per_class": {
+   "Backdoor_Malware": {
+    "support": 85,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "predicted_benign_share": 0.8352941176470589
+   },
+   "BenignTraffic": {
+    "support": 26226,
+    "precision": 0.6296314316993067,
+    "recall": 0.9868451155342027,
+    "f1": 0.7687692147747694,
+    "predicted_benign_share": 0.9868451155342027
+   },
+   "BrowserHijacking": {
+    "support": 128,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "predicted_benign_share": 0.921875
+   },
+   "CommandInjection": {
+    "support": 113,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "predicted_benign_share": 0.9203539823008849
+   },
+   "DDoS-ACK_Fragmentation": {
+    "support": 6902,
+    "precision": 0.9140417191656167,
+    "recall": 0.9459576934221965,
+    "f1": 0.9297258810964756,
+    "predicted_benign_share": 0.002607939727615184
+   },
+   "DDoS-HTTP_Flood": {
+    "support": 681,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "predicted_benign_share": 0.0
+   },
+   "DDoS-ICMP_Flood": {
+    "support": 170580,
+    "precision": 0.9963508558529582,
+    "recall": 0.9987982178449994,
+    "f1": 0.9975730358130915,
+    "predicted_benign_share": 0.00011724703951225231
+   },
+   "DDoS-ICMP_Fragmentation": {
+    "support": 10773,
+    "precision": 0.9871613329557255,
+    "recall": 0.9706674092639005,
+    "f1": 0.9788448937564355,
+    "predicted_benign_share": 0.000464123271140815
+   },
+   "DDoS-PSHACK_Flood": {
+    "support": 97720,
+    "precision": 0.9987923836888514,
+    "recall": 0.9817949242734343,
+    "f1": 0.9902207176290272,
+    "predicted_benign_share": 2.0466639377814162e-05
+   },
+   "DDoS-RSTFINFlood": {
+    "support": 96293,
+    "precision": 0.9982981196297372,
+    "recall": 0.9990341977090754,
+    "f1": 0.9986660230357578,
+    "predicted_benign_share": 0.0
+   },
+   "DDoS-SYN_Flood": {
+    "support": 96523,
+    "precision": 0.9933415174401538,
+    "recall": 0.7712462314681475,
+    "f1": 0.8683171492724463,
+    "predicted_benign_share": 1.0360225024087523e-05
+   },
+   "DDoS-SlowLoris": {
+    "support": 596,
+    "precision": 0.40625,
+    "recall": 0.174496644295302,
+    "f1": 0.24413145539906103,
+    "predicted_benign_share": 0.01174496644295302
+   },
+   "DDoS-SynonymousIP_Flood": {
+    "support": 85535,
+    "precision": 0.9602270162928195,
+    "recall": 0.9949494359034313,
+    "f1": 0.9772799044573187,
+    "predicted_benign_share": 0.0
+   },
+   "DDoS-TCP_Flood": {
+    "support": 107575,
+    "precision": 0.9750682024856017,
+    "recall": 0.9568765977225192,
+    "f1": 0.9658867520866273,
+    "predicted_benign_share": 5.577504066930049e-05
+   },
+   "DDoS-UDP_Flood": {
+    "support": 129201,
+    "precision": 0.7126761817817461,
+    "recall": 0.9909211229015256,
+    "f1": 0.8290760737586815,
+    "predicted_benign_share": 7.739878174317536e-06
+   },
+   "DDoS-UDP_Fragmentation": {
+    "support": 6833,
+    "precision": 0.9909683150725496,
+    "recall": 0.9795111956680814,
+    "f1": 0.9852064473393685,
+    "predicted_benign_share": 0.0008780916142250841
+   },
+   "DNS_Spoofing": {
+    "support": 4316,
+    "precision": 0.38237490664675133,
+    "recall": 0.11862835959221502,
+    "f1": 0.181078691423519,
+    "predicted_benign_share": 0.8213623725671918
+   },
+   "DictionaryBruteForce": {
+    "support": 300,
+    "precision": 1.0,
+    "recall": 0.15666666666666668,
+    "f1": 0.27089337175792505,
+    "predicted_benign_share": 0.7566666666666667
+   },
+   "DoS-HTTP_Flood": {
+    "support": 1690,
+    "precision": 0.695274831243973,
+    "recall": 0.42662721893491123,
+    "f1": 0.5287862119545288,
+    "predicted_benign_share": 0.0
+   },
+   "DoS-SYN_Flood": {
+    "support": 48313,
+    "precision": 0.7120885133286726,
+    "recall": 0.9698010887338812,
+    "f1": 0.8212004101269816,
+    "predicted_benign_share": 0.0
+   },
+   "DoS-TCP_Flood": {
+    "support": 64017,
+    "precision": 0.9078486135256063,
+    "recall": 0.9952200196822719,
+    "f1": 0.9495286709638958,
+    "predicted_benign_share": 6.2483402846119e-05
+   },
+   "DoS-UDP_Flood": {
+    "support": 79004,
+    "precision": 0.9541584124005144,
+    "recall": 0.34750139233456534,
+    "f1": 0.5094593466138415,
+    "predicted_benign_share": 5.06303478304896e-05
+   },
+   "MITM-ArpSpoofing": {
+    "support": 7428,
+    "precision": 0.946078431372549,
+    "recall": 0.10393107162089392,
+    "f1": 0.18728772440562833,
+    "predicted_benign_share": 0.776117393645665
+   },
+   "Mirai-greeth_flood": {
+    "support": 23604,
+    "precision": 0.8058866103739445,
+    "recall": 0.7075919335705813,
+    "f1": 0.7535473392136074,
+    "predicted_benign_share": 0.0
+   },
+   "Mirai-greip_flood": {
+    "support": 18257,
+    "precision": 0.6761559037065342,
+    "recall": 0.775373829216191,
+    "f1": 0.7223738932972724,
+    "predicted_benign_share": 0.0002738675576491209
+   },
+   "Mirai-udpplain": {
+    "support": 21299,
+    "precision": 0.9937187116274676,
+    "recall": 0.9878867552467252,
+    "f1": 0.9907941515786499,
+    "predicted_benign_share": 0.00018780224423681864
+   },
+   "Recon-HostDiscovery": {
+    "support": 3133,
+    "precision": 0.4468371467025572,
+    "recall": 0.31790616022981166,
+    "f1": 0.37150317045878406,
+    "predicted_benign_share": 0.6035748483881264
+   },
+   "Recon-OSScan": {
+    "support": 2320,
+    "precision": 0.22393822393822393,
+    "recall": 0.075,
+    "f1": 0.1123668065870197,
+    "predicted_benign_share": 0.7629310344827587
+   },
+   "Recon-PingSweep": {
+    "support": 51,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "predicted_benign_share": 0.7843137254901961
+   },
+   "Recon-PortScan": {
+    "support": 1984,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "predicted_benign_share": 0.6930443548387096
+   },
+   "SqlInjection": {
+    "support": 137,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "predicted_benign_share": 0.8467153284671532
+   },
+   "Uploading_Attack": {
+    "support": 33,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "predicted_benign_share": 0.9090909090909091
+   },
+   "VulnerabilityScan": {
+    "support": 872,
+    "precision": 0.6897018970189702,
+    "recall": 0.5837155963302753,
+    "f1": 0.6322981366459627,
+    "predicted_benign_share": 0.0
+   },
+   "XSS": {
+    "support": 98,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "predicted_benign_share": 0.9081632653061225
+   }
+  },
+  "roc_auc_macro_ovr": 0.992338468152374,
+  "roc_auc_micro": 0.9984024627753768
+ },
+ "final_down_bytes": 24072,
+ "final_up_bytes": 63752,
+ "final/holdout": {
+  "n": 1170554,
+  "accuracy": 0.899527061545217,
+  "macro_f1": 0.49328211284116985,
+  "macro_precision": 0.5830871345766677,
+  "macro_recall": 0.4928168808682129,
+  "mcc": 0.8925819587112362,
+  "macro_fpr": 0.00320990293654278,
+  "benign_far": 0.017636104721218095,
+  "attack_miss_rate": 0.013705784019307766,
+  "attack_recall": 0.9862942159806922,
+  "n_benign": 27387,
+  "n_attack": 1143167,
+  "zero_recall_classes": [
+   "Backdoor_Malware",
+   "BrowserHijacking",
+   "CommandInjection",
+   "DDoS-HTTP_Flood",
+   "Recon-PingSweep",
+   "Recon-PortScan",
+   "SqlInjection",
+   "Uploading_Attack",
+   "XSS"
+  ],
+  "per_class": {
+   "Backdoor_Malware": {
+    "support": 93,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "predicted_benign_share": 0.8279569892473119
+   },
+   "BenignTraffic": {
+    "support": 27387,
+    "precision": 0.6319646716151461,
+    "recall": 0.9823638952787819,
+    "f1": 0.7691362083506054,
+    "predicted_benign_share": 0.9823638952787819
+   },
+   "BrowserHijacking": {
+    "support": 157,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "predicted_benign_share": 0.910828025477707
+   },
+   "CommandInjection": {
+    "support": 132,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "predicted_benign_share": 0.9318181818181818
+   },
+   "DDoS-ACK_Fragmentation": {
+    "support": 7154,
+    "precision": 0.9666859791425261,
+    "recall": 0.9329046687168018,
+    "f1": 0.9494949494949495,
+    "predicted_benign_share": 0.0012580374615599665
+   },
+   "DDoS-HTTP_Flood": {
+    "support": 701,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "predicted_benign_share": 0.0
+   },
+   "DDoS-ICMP_Flood": {
+    "support": 181022,
+    "precision": 0.9961116067986296,
+    "recall": 0.9991050811503575,
+    "f1": 0.9976060983816343,
+    "predicted_benign_share": 1.6572571289677497e-05
+   },
+   "DDoS-ICMP_Fragmentation": {
+    "support": 11368,
+    "precision": 0.9869251979009162,
+    "recall": 0.976073187895848,
+    "f1": 0.9814691964088276,
+    "predicted_benign_share": 0.0008796622097114708
+   },
+   "DDoS-PSHACK_Flood": {
+    "support": 102457,
+    "precision": 0.9989788533415289,
+    "recall": 0.9834759948075779,
+    "f1": 0.9911668076567449,
+    "predicted_benign_share": 3.904076832232059e-05
+   },
+   "DDoS-RSTFINFlood": {
+    "support": 101022,
+    "precision": 0.9985256137503834,
+    "recall": 0.9988913306012551,
+    "f1": 0.9987084386953746,
+    "predicted_benign_share": 4.949416958682267e-05
+   },
+   "DDoS-SYN_Flood": {
+    "support": 102082,
+    "precision": 0.9956973751930005,
+    "recall": 0.9475911522109677,
+    "f1": 0.9710488274975907,
+    "predicted_benign_share": 3.918418526282792e-05
+   },
+   "DDoS-SlowLoris": {
+    "support": 617,
+    "precision": 0.5603448275862069,
+    "recall": 0.1053484602917342,
+    "f1": 0.17735334242837653,
+    "predicted_benign_share": 0.011345218800648298
+   },
+   "DDoS-SynonymousIP_Flood": {
+    "support": 90320,
+    "precision": 0.9612357633408694,
+    "recall": 0.9979738706820195,
+    "f1": 0.9792603698150925,
+    "predicted_benign_share": 1.1071744906997343e-05
+   },
+   "DDoS-TCP_Flood": {
+    "support": 113276,
+    "precision": 0.975488148215421,
+    "recall": 0.9482238073378297,
+    "f1": 0.9616627720627076,
+    "predicted_benign_share": 7.945195804936615e-05
+   },
+   "DDoS-UDP_Flood": {
+    "support": 135736,
+    "precision": 0.6878276210958751,
+    "recall": 0.9966700064831732,
+    "f1": 0.8139366281710733,
+    "predicted_benign_share": 0.0002062827842282077
+   },
+   "DDoS-UDP_Fragmentation": {
+    "support": 7183,
+    "precision": 0.9923284557465549,
+    "recall": 0.9724349157733537,
+    "f1": 0.9822809731402053,
+    "predicted_benign_share": 0.001252958373938466
+   },
+   "DNS_Spoofing": {
+    "support": 4545,
+    "precision": 0.3737796373779637,
+    "recall": 0.11793179317931793,
+    "f1": 0.17929419635390534,
+    "predicted_benign_share": 0.8202420242024202
+   },
+   "DictionaryBruteForce": {
+    "support": 288,
+    "precision": 1.0,
+    "recall": 0.1388888888888889,
+    "f1": 0.24390243902439024,
+    "predicted_benign_share": 0.7291666666666666
+   },
+   "DoS-HTTP_Flood": {
+    "support": 1817,
+    "precision": 0.723404255319149,
+    "recall": 0.2993946064942212,
+    "f1": 0.4235110938108213,
+    "predicted_benign_share": 0.001651073197578426
+   },
+   "DoS-SYN_Flood": {
+    "support": 50833,
+    "precision": 0.8878338278931751,
+    "recall": 0.9711801388861566,
+    "f1": 0.9276386253029933,
+    "predicted_benign_share": 3.934452029193634e-05
+   },
+   "DoS-TCP_Flood": {
+    "support": 66689,
+    "precision": 0.9534479788700045,
+    "recall": 0.9959813462490066,
+    "f1": 0.9742506582180077,
+    "predicted_benign_share": 0.00010496483677967881
+   },
+   "DoS-UDP_Flood": {
+    "support": 82965,
+    "precision": 0.9706981140568034,
+    "recall": 0.2599409389501597,
+    "f1": 0.4100701640965184,
+    "predicted_benign_share": 0.0002651720605074429
+   },
+   "MITM-ArpSpoofing": {
+    "support": 7703,
+    "precision": 0.902738432483475,
+    "recall": 0.12410749058808257,
+    "f1": 0.21821501940196303,
+    "predicted_benign_share": 0.7580163572634039
+   },
+   "Mirai-greeth_flood": {
+    "support": 24803,
+    "precision": 0.5884194818855647,
+    "recall": 0.9698020400757973,
+    "f1": 0.732438110897963,
+    "predicted_benign_share": 0.0
+   },
+   "Mirai-greip_flood": {
+    "support": 18765,
+    "precision": 0.7100115074798619,
+    "recall": 0.09864108713029576,
+    "f1": 0.17321729365524985,
+    "predicted_benign_share": 0.00042632560618172127
+   },
+   "Mirai-udpplain": {
+    "support": 22199,
+    "precision": 0.9856395114749698,
+    "recall": 0.9924771386098473,
+    "f1": 0.9890465074519662,
+    "predicted_benign_share": 0.00022523537096265597
+   },
+   "Recon-HostDiscovery": {
+    "support": 3466,
+    "precision": 0.40586080586080586,
+    "recall": 0.31967686093479514,
+    "f1": 0.3576500968366688,
+    "predicted_benign_share": 0.5487593768032314
+   },
+   "Recon-OSScan": {
+    "support": 2488,
+    "precision": 0.13874066168623267,
+    "recall": 0.0522508038585209,
+    "f1": 0.07591240875912408,
+    "predicted_benign_share": 0.7504019292604501
+   },
+   "Recon-PingSweep": {
+    "support": 45,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "predicted_benign_share": 0.6888888888888889
+   },
+   "Recon-PortScan": {
+    "support": 2070,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "predicted_benign_share": 0.6719806763285024
+   },
+   "SqlInjection": {
+    "support": 146,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "predicted_benign_share": 0.7945205479452054
+   },
+   "Uploading_Attack": {
+    "support": 35,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "predicted_benign_share": 0.8285714285714286
+   },
+   "VulnerabilityScan": {
+    "support": 900,
+    "precision": 0.4322742474916388,
+    "recall": 0.5744444444444444,
+    "f1": 0.4933206106870229,
+    "predicted_benign_share": 0.0
+   },
+   "XSS": {
+    "support": 90,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "predicted_benign_share": 0.8444444444444444
+   }
+  },
+  "roc_auc_macro_ovr": 0.9943471728744323,
+  "roc_auc_micro": 0.9977943142212311
+ },
+ "final/holdout_nonoverlap": {
+  "n": 1165171,
+  "accuracy": 0.8991178118919884,
+  "macro_f1": 0.4932056952144363,
+  "macro_precision": 0.582991124495233,
+  "macro_recall": 0.4927939177859403,
+  "mcc": 0.892211633035815,
+  "macro_fpr": 0.00322412835227635,
+  "benign_far": 0.01761116591764405,
+  "attack_miss_rate": 0.013756347765252653,
+  "attack_recall": 0.9862436522347473,
+  "n_benign": 27369,
+  "n_attack": 1137802,
+  "zero_recall_classes": [
+   "Backdoor_Malware",
+   "BrowserHijacking",
+   "CommandInjection",
+   "DDoS-HTTP_Flood",
+   "Recon-PingSweep",
+   "Recon-PortScan",
+   "SqlInjection",
+   "Uploading_Attack",
+   "XSS"
+  ],
+  "per_class": {
+   "Backdoor_Malware": {
+    "support": 93,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "predicted_benign_share": 0.8279569892473119
+   },
+   "BenignTraffic": {
+    "support": 27369,
+    "precision": 0.6320552904393615,
+    "recall": 0.982388834082356,
+    "f1": 0.7692109629799164,
+    "predicted_benign_share": 0.982388834082356
+   },
+   "BrowserHijacking": {
+    "support": 156,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "predicted_benign_share": 0.9102564102564102
+   },
+   "CommandInjection": {
+    "support": 131,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "predicted_benign_share": 0.9312977099236641
+   },
+   "DDoS-ACK_Fragmentation": {
+    "support": 7142,
+    "precision": 0.9666328159001886,
+    "recall": 0.9329319518342201,
+    "f1": 0.9494834342714642,
+    "predicted_benign_share": 0.0012601512181461775
+   },
+   "DDoS-HTTP_Flood": {
+    "support": 700,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "predicted_benign_share": 0.0
+   },
+   "DDoS-ICMP_Flood": {
+    "support": 176244,
+    "precision": 0.9960121502146652,
+    "recall": 0.999080819772588,
+    "f1": 0.9975441250201824,
+    "predicted_benign_share": 1.702185606318513e-05
+   },
+   "DDoS-ICMP_Fragmentation": {
+    "support": 11342,
+    "precision": 0.9869840420789873,
+    "recall": 0.9761065067889261,
+    "f1": 0.9815151380823618,
+    "predicted_benign_share": 0.0008816787162757891
+   },
+   "DDoS-PSHACK_Flood": {
+    "support": 102457,
+    "precision": 0.9989788533415289,
+    "recall": 0.9834759948075779,
+    "f1": 0.9911668076567449,
+    "predicted_benign_share": 3.904076832232059e-05
+   },
+   "DDoS-RSTFINFlood": {
+    "support": 101017,
+    "precision": 0.9985255553906288,
+    "recall": 0.9989011750497441,
+    "f1": 0.9987133299022131,
+    "predicted_benign_share": 4.9496619380896285e-05
+   },
+   "DDoS-SYN_Flood": {
+    "support": 102074,
+    "precision": 0.9957072708742961,
+    "recall": 0.9475870446930658,
+    "f1": 0.9710513766533645,
+    "predicted_benign_share": 3.918725630424986e-05
+   },
+   "DDoS-SlowLoris": {
+    "support": 616,
+    "precision": 0.5603448275862069,
+    "recall": 0.10551948051948051,
+    "f1": 0.17759562841530055,
+    "predicted_benign_share": 0.011363636363636364
+   },
+   "DDoS-SynonymousIP_Flood": {
+    "support": 90320,
+    "precision": 0.9612357633408694,
+    "recall": 0.9979738706820195,
+    "f1": 0.9792603698150925,
+    "predicted_benign_share": 1.1071744906997343e-05
+   },
+   "DDoS-TCP_Flood": {
+    "support": 113269,
+    "precision": 0.9754865898295233,
+    "recall": 0.9482206075801852,
+    "f1": 0.961660369249503,
+    "predicted_benign_share": 7.945686816339864e-05
+   },
+   "DDoS-UDP_Flood": {
+    "support": 135735,
+    "precision": 0.6878295310680747,
+    "recall": 0.9966699819501234,
+    "f1": 0.813937957258375,
+    "predicted_benign_share": 0.0002062843039746565
+   },
+   "DDoS-UDP_Fragmentation": {
+    "support": 7179,
+    "precision": 0.9923240938166311,
+    "recall": 0.9724195570413706,
+    "f1": 0.982271000422119,
+    "predicted_benign_share": 0.0012536564981195152
+   },
+   "DNS_Spoofing": {
+    "support": 4543,
+    "precision": 0.3737796373779637,
+    "recall": 0.11798371120405018,
+    "f1": 0.17935419106575204,
+    "predicted_benign_share": 0.8201628879594981
+   },
+   "DictionaryBruteForce": {
+    "support": 288,
+    "precision": 1.0,
+    "recall": 0.1388888888888889,
+    "f1": 0.24390243902439024,
+    "predicted_benign_share": 0.7291666666666666
+   },
+   "DoS-HTTP_Flood": {
+    "support": 1814,
+    "precision": 0.7226666666666667,
+    "recall": 0.298787210584344,
+    "f1": 0.42277691107644305,
+    "predicted_benign_share": 0.0016538037486218302
+   },
+   "DoS-SYN_Flood": {
+    "support": 50826,
+    "precision": 0.887819705744811,
+    "recall": 0.971176169676937,
+    "f1": 0.9276291062166429,
+    "predicted_benign_share": 3.934993900759454e-05
+   },
+   "DoS-TCP_Flood": {
+    "support": 66685,
+    "precision": 0.9534459740744462,
+    "recall": 0.9959961010722052,
+    "f1": 0.9742566705293885,
+    "predicted_benign_share": 0.00010497113293844193
+   },
+   "DoS-UDP_Flood": {
+    "support": 82960,
+    "precision": 0.9707365388078516,
+    "recall": 0.25990838958534235,
+    "f1": 0.41003308865477506,
+    "predicted_benign_share": 0.0002651880424300868
+   },
+   "MITM-ArpSpoofing": {
+    "support": 7697,
+    "precision": 0.902738432483475,
+    "recall": 0.124204235416396,
+    "f1": 0.21836455002284147,
+    "predicted_benign_share": 0.7578277250876965
+   },
+   "Mirai-greeth_flood": {
+    "support": 24395,
+    "precision": 0.5848025518656809,
+    "recall": 0.9694609551137529,
+    "f1": 0.7295329755074341,
+    "predicted_benign_share": 0.0
+   },
+   "Mirai-greip_flood": {
+    "support": 18726,
+    "precision": 0.7102731819930742,
+    "recall": 0.09857951511267755,
+    "f1": 0.1731301289566237,
+    "predicted_benign_share": 0.0004272134999465983
+   },
+   "Mirai-udpplain": {
+    "support": 22161,
+    "precision": 0.9856150571364553,
+    "recall": 0.9924642389783854,
+    "f1": 0.9890277902689091,
+    "predicted_benign_share": 0.00022562158747348947
+   },
+   "Recon-HostDiscovery": {
+    "support": 3463,
+    "precision": 0.40615835777126097,
+    "recall": 0.31995379728559054,
+    "f1": 0.3579389436278469,
+    "predicted_benign_share": 0.5483684666474156
+   },
+   "Recon-OSScan": {
+    "support": 2487,
+    "precision": 0.13782051282051283,
+    "recall": 0.05186972255729795,
+    "f1": 0.07537248028045573,
+    "predicted_benign_share": 0.7507036590269401
+   },
+   "Recon-PingSweep": {
+    "support": 45,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "predicted_benign_share": 0.6888888888888889
+   },
+   "Recon-PortScan": {
+    "support": 2066,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "predicted_benign_share": 0.6718296224588577
+   },
+   "SqlInjection": {
+    "support": 146,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "predicted_benign_share": 0.7945205479452054
+   },
+   "Uploading_Attack": {
+    "support": 35,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "predicted_benign_share": 0.8285714285714286
+   },
+   "VulnerabilityScan": {
+    "support": 900,
+    "precision": 0.4337248322147651,
+    "recall": 0.5744444444444444,
+    "f1": 0.494263862332696,
+    "predicted_benign_share": 0.0
+   },
+   "XSS": {
+    "support": 90,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "predicted_benign_share": 0.8444444444444444
+   }
+  },
+  "roc_auc_macro_ovr": 0.9943300601139394,
+  "roc_auc_micro": 0.9977770449038342
+ },
+ "final/dev_test": {
+  "n": 1170467,
+  "accuracy": 0.8987848439981648,
+  "macro_f1": 0.49302752567023955,
+  "macro_precision": 0.5784065160416132,
+  "macro_recall": 0.49229799297413757,
+  "mcc": 0.8918346073798862,
+  "macro_fpr": 0.0032338737901214326,
+  "benign_far": 0.01766348699720721,
+  "attack_miss_rate": 0.013703784071341575,
+  "attack_recall": 0.9862962159286585,
+  "n_benign": 27571,
+  "n_attack": 1142896,
+  "zero_recall_classes": [
+   "Backdoor_Malware",
+   "BrowserHijacking",
+   "CommandInjection",
+   "DDoS-HTTP_Flood",
+   "Recon-PingSweep",
+   "Recon-PortScan",
+   "SqlInjection",
+   "Uploading_Attack",
+   "XSS"
+  ],
+  "per_class": {
+   "Backdoor_Malware": {
+    "support": 88,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "predicted_benign_share": 0.8522727272727273
+   },
+   "BenignTraffic": {
+    "support": 27571,
+    "precision": 0.633603144153839,
+    "recall": 0.9823365130027928,
+    "f1": 0.7703400315713128,
+    "predicted_benign_share": 0.9823365130027928
+   },
+   "BrowserHijacking": {
+    "support": 133,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "predicted_benign_share": 0.9323308270676691
+   },
+   "CommandInjection": {
+    "support": 118,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "predicted_benign_share": 0.8728813559322034
+   },
+   "DDoS-ACK_Fragmentation": {
+    "support": 7262,
+    "precision": 0.9727129111015367,
+    "recall": 0.9326631781878271,
+    "f1": 0.9522671353251319,
+    "predicted_benign_share": 0.0012393280088129992
+   },
+   "DDoS-HTTP_Flood": {
+    "support": 707,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "predicted_benign_share": 0.0014144271570014145
+   },
+   "DDoS-ICMP_Flood": {
+    "support": 179501,
+    "precision": 0.9961946347127089,
+    "recall": 0.9990139330700107,
+    "f1": 0.9976022920085672,
+    "predicted_benign_share": 2.228399841783611e-05
+   },
+   "DDoS-ICMP_Fragmentation": {
+    "support": 11339,
+    "precision": 0.9860183453557753,
+    "recall": 0.9764529499955904,
+    "f1": 0.9812123360510457,
+    "predicted_benign_share": 0.001322867977775818
+   },
+   "DDoS-PSHACK_Flood": {
+    "support": 102790,
+    "precision": 0.9989125384318804,
+    "recall": 0.9830041832863119,
+    "f1": 0.9908945146437975,
+    "predicted_benign_share": 6.810000972857282e-05
+   },
+   "DDoS-RSTFINFlood": {
+    "support": 101251,
+    "precision": 0.9987264164914256,
+    "recall": 0.9991012434445092,
+    "f1": 0.9989137948059642,
+    "predicted_benign_share": 0.0
+   },
+   "DDoS-SYN_Flood": {
+    "support": 101651,
+    "precision": 0.9950562634453086,
+    "recall": 0.9464737189009453,
+    "f1": 0.9701571551737177,
+    "predicted_benign_share": 2.9512744586870765e-05
+   },
+   "DDoS-SlowLoris": {
+    "support": 618,
+    "precision": 0.42857142857142855,
+    "recall": 0.0970873786407767,
+    "f1": 0.158311345646438,
+    "predicted_benign_share": 0.008090614886731391
+   },
+   "DDoS-SynonymousIP_Flood": {
+    "support": 89987,
+    "precision": 0.9600710038923821,
+    "recall": 0.9977218931623457,
+    "f1": 0.978534410881566,
+    "predicted_benign_share": 1.1112716281240624e-05
+   },
+   "DDoS-TCP_Flood": {
+    "support": 113089,
+    "precision": 0.9749654570576686,
+    "recall": 0.948403469833494,
+    "f1": 0.9615010511122964,
+    "predicted_benign_share": 8.842593001971898e-06
+   },
+   "DDoS-UDP_Flood": {
+    "support": 135977,
+    "precision": 0.6872034070168322,
+    "recall": 0.996815637938769,
+    "f1": 0.8135479282269512,
+    "predicted_benign_share": 0.00016179206777616802
+   },
+   "DDoS-UDP_Fragmentation": {
+    "support": 7192,
+    "precision": 0.9907932011331445,
+    "recall": 0.9726084538375973,
+    "f1": 0.9816166152119001,
+    "predicted_benign_share": 0.0008342602892102336
+   },
+   "DNS_Spoofing": {
+    "support": 4543,
+    "precision": 0.3709116214335421,
+    "recall": 0.11732335461149021,
+    "f1": 0.1782608695652174,
+    "predicted_benign_share": 0.8139995597622717
+   },
+   "DictionaryBruteForce": {
+    "support": 317,
+    "precision": 1.0,
+    "recall": 0.17034700315457413,
+    "f1": 0.29110512129380056,
+    "predicted_benign_share": 0.6813880126182965
+   },
+   "DoS-HTTP_Flood": {
+    "support": 1784,
+    "precision": 0.7175989085948158,
+    "recall": 0.2948430493273543,
+    "f1": 0.4179578863726659,
+    "predicted_benign_share": 0.0011210762331838565
+   },
+   "DoS-SYN_Flood": {
+    "support": 50807,
+    "precision": 0.8858349052366837,
+    "recall": 0.9705355561241561,
+    "f1": 0.9262529115636036,
+    "predicted_benign_share": 3.936465447674533e-05
+   },
+   "DoS-TCP_Flood": {
+    "support": 67323,
+    "precision": 0.9539765616111048,
+    "recall": 0.996331120122395,
+    "f1": 0.97469393686199,
+    "predicted_benign_share": 1.4853764686659834e-05
+   },
+   "DoS-UDP_Flood": {
+    "support": 83173,
+    "precision": 0.9710354815351194,
+    "recall": 0.2579683310689767,
+    "f1": 0.40764137590363736,
+    "predicted_benign_share": 0.00024046265013886718
+   },
+   "MITM-ArpSpoofing": {
+    "support": 7803,
+    "precision": 0.8828740157480315,
+    "recall": 0.11495578623606305,
+    "f1": 0.20342442453792947,
+    "predicted_benign_share": 0.7680379341278996
+   },
+   "Mirai-greeth_flood": {
+    "support": 24798,
+    "precision": 0.5822649831568233,
+    "recall": 0.9688684571336398,
+    "f1": 0.7273883229136707,
+    "predicted_benign_share": 0.00016130333091378336
+   },
+   "Mirai-greip_flood": {
+    "support": 19171,
+    "precision": 0.7091327705295472,
+    "recall": 0.0963955975170831,
+    "f1": 0.16972034715525555,
+    "predicted_benign_share": 0.00020864847947420583
+   },
+   "Mirai-udpplain": {
+    "support": 22433,
+    "precision": 0.9869646182495344,
+    "recall": 0.9922881469264031,
+    "f1": 0.9896192233311846,
+    "predicted_benign_share": 0.00044577185396514065
+   },
+   "Recon-HostDiscovery": {
+    "support": 3304,
+    "precision": 0.4089038533482978,
+    "recall": 0.33081113801452783,
+    "f1": 0.3657353187217668,
+    "predicted_benign_share": 0.5438861985472155
+   },
+   "Recon-OSScan": {
+    "support": 2421,
+    "precision": 0.14367816091954022,
+    "recall": 0.05163155720776538,
+    "f1": 0.07596475235490732,
+    "predicted_benign_share": 0.755059892606361
+   },
+   "Recon-PingSweep": {
+    "support": 53,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "predicted_benign_share": 0.7924528301886793
+   },
+   "Recon-PortScan": {
+    "support": 2074,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "predicted_benign_share": 0.6909353905496625
+   },
+   "SqlInjection": {
+    "support": 147,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "predicted_benign_share": 0.7891156462585034
+   },
+   "Uploading_Attack": {
+    "support": 33,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "predicted_benign_share": 0.8484848484848485
+   },
+   "VulnerabilityScan": {
+    "support": 906,
+    "precision": 0.42981691368788144,
+    "recall": 0.5441501103752759,
+    "f1": 0.4802727715538237,
+    "predicted_benign_share": 0.0
+   },
+   "XSS": {
+    "support": 103,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "predicted_benign_share": 0.8932038834951457
+   }
+  },
+  "roc_auc_macro_ovr": 0.9944571957358842,
+  "roc_auc_micro": 0.997782172911758
+ },
+ "final/dev_test_nonoverlap": {
+  "n": 1112620,
+  "accuracy": 0.8986940734482572,
+  "macro_f1": 0.4929685561283575,
+  "macro_precision": 0.5782592704598322,
+  "macro_recall": 0.4922986577875865,
+  "mcc": 0.8917373950049838,
+  "macro_fpr": 0.0032365483757896365,
+  "benign_far": 0.017692366353999848,
+  "attack_miss_rate": 0.013726143553811968,
+  "attack_recall": 0.986273856446188,
+  "n_benign": 26226,
+  "n_attack": 1086394,
+  "zero_recall_classes": [
+   "Backdoor_Malware",
+   "BrowserHijacking",
+   "CommandInjection",
+   "DDoS-HTTP_Flood",
+   "Recon-PingSweep",
+   "Recon-PortScan",
+   "SqlInjection",
+   "Uploading_Attack",
+   "XSS"
+  ],
+  "per_class": {
+   "Backdoor_Malware": {
+    "support": 85,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "predicted_benign_share": 0.8470588235294118
+   },
+   "BenignTraffic": {
+    "support": 26226,
+    "precision": 0.633377587648129,
+    "recall": 0.9823076336460002,
+    "f1": 0.7701644245142003,
+    "predicted_benign_share": 0.9823076336460002
+   },
+   "BrowserHijacking": {
+    "support": 128,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "predicted_benign_share": 0.9296875
+   },
+   "CommandInjection": {
+    "support": 113,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "predicted_benign_share": 0.8672566371681416
+   },
+   "DDoS-ACK_Fragmentation": {
+    "support": 6902,
+    "precision": 0.9723981900452489,
+    "recall": 0.934077079107505,
+    "f1": 0.9528524977830328,
+    "predicted_benign_share": 0.001303969863807592
+   },
+   "DDoS-HTTP_Flood": {
+    "support": 681,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "predicted_benign_share": 0.0014684287812041115
+   },
+   "DDoS-ICMP_Flood": {
+    "support": 170580,
+    "precision": 0.9962292388908701,
+    "recall": 0.9989916754601946,
+    "f1": 0.9976085448419796,
+    "predicted_benign_share": 1.7587055926837847e-05
+   },
+   "DDoS-ICMP_Fragmentation": {
+    "support": 10773,
+    "precision": 0.986122831692452,
+    "recall": 0.9762368885175903,
+    "f1": 0.9811549584849333,
+    "predicted_benign_share": 0.001392369813422445
+   },
+   "DDoS-PSHACK_Flood": {
+    "support": 97720,
+    "precision": 0.9988769419545369,
+    "recall": 0.9829922226770365,
+    "f1": 0.9908709241513054,
+    "predicted_benign_share": 6.139991813344248e-05
+   },
+   "DDoS-RSTFINFlood": {
+    "support": 96293,
+    "precision": 0.9987438359719699,
+    "recall": 0.9990757375925561,
+    "f1": 0.9989097592125347,
+    "predicted_benign_share": 0.0
+   },
+   "DDoS-SYN_Flood": {
+    "support": 96523,
+    "precision": 0.9950320303307622,
+    "recall": 0.9462200718999617,
+    "f1": 0.9700123731486743,
+    "predicted_benign_share": 3.108067507226257e-05
+   },
+   "DDoS-SlowLoris": {
+    "support": 596,
+    "precision": 0.41911764705882354,
+    "recall": 0.09563758389261745,
+    "f1": 0.1557377049180328,
+    "predicted_benign_share": 0.008389261744966443
+   },
+   "DDoS-SynonymousIP_Flood": {
+    "support": 85535,
+    "precision": 0.96,
+    "recall": 0.9977669959665634,
+    "f1": 0.9785192191933958,
+    "predicted_benign_share": 1.1691120593908927e-05
+   },
+   "DDoS-TCP_Flood": {
+    "support": 107575,
+    "precision": 0.9748674088585216,
+    "recall": 0.9483151289797815,
+    "f1": 0.9614079728583546,
+    "predicted_benign_share": 9.295840111550081e-06
+   },
+   "DDoS-UDP_Flood": {
+    "support": 129201,
+    "precision": 0.6871318507768482,
+    "recall": 0.9967802106794839,
+    "f1": 0.813485984998026,
+    "predicted_benign_share": 0.00015479756348635074
+   },
+   "DDoS-UDP_Fragmentation": {
+    "support": 6833,
+    "precision": 0.9906124273580689,
+    "recall": 0.9729255085613933,
+    "f1": 0.9816893089190786,
+    "predicted_benign_share": 0.0008780916142250841
+   },
+   "DNS_Spoofing": {
+    "support": 4316,
+    "precision": 0.37345003646973013,
+    "recall": 0.11862835959221502,
+    "f1": 0.18005978547564622,
+    "predicted_benign_share": 0.8118628359592215
+   },
+   "DictionaryBruteForce": {
+    "support": 300,
+    "precision": 1.0,
+    "recall": 0.17,
+    "f1": 0.2905982905982906,
+    "predicted_benign_share": 0.6766666666666666
+   },
+   "DoS-HTTP_Flood": {
+    "support": 1690,
+    "precision": 0.7211678832116788,
+    "recall": 0.2923076923076923,
+    "f1": 0.416,
+    "predicted_benign_share": 0.001183431952662722
+   },
+   "DoS-SYN_Flood": {
+    "support": 48313,
+    "precision": 0.8858119722699711,
+    "recall": 0.9706290232442614,
+    "f1": 0.9262829376209852,
+    "predicted_benign_share": 4.139672551901145e-05
+   },
+   "DoS-TCP_Flood": {
+    "support": 64017,
+    "precision": 0.9537964652052991,
+    "recall": 0.9964228251870597,
+    "f1": 0.9746437984644181,
+    "predicted_benign_share": 1.562085071152975e-05
+   },
+   "DoS-UDP_Flood": {
+    "support": 79004,
+    "precision": 0.9706541966884573,
+    "recall": 0.25748063389195486,
+    "f1": 0.4069987295045068,
+    "predicted_benign_share": 0.000253151739152448
+   },
+   "MITM-ArpSpoofing": {
+    "support": 7428,
+    "precision": 0.8792924037460979,
+    "recall": 0.1137587506731287,
+    "f1": 0.20145428537370366,
+    "predicted_benign_share": 0.7692514808831449
+   },
+   "Mirai-greeth_flood": {
+    "support": 23604,
+    "precision": 0.5820097739767868,
+    "recall": 0.9687341128622268,
+    "f1": 0.7271513070024804,
+    "predicted_benign_share": 0.00012709710218607016
+   },
+   "Mirai-greip_flood": {
+    "support": 18257,
+    "precision": 0.7079646017699115,
+    "recall": 0.09640138029249055,
+    "f1": 0.1696958009931061,
+    "predicted_benign_share": 0.0002190940461192967
+   },
+   "Mirai-udpplain": {
+    "support": 21299,
+    "precision": 0.9872501401083504,
+    "recall": 0.9924879102305273,
+    "f1": 0.9898620964154433,
+    "predicted_benign_share": 0.00042255504953284193
+   },
+   "Recon-HostDiscovery": {
+    "support": 3133,
+    "precision": 0.40896578843885173,
+    "recall": 0.33195020746887965,
+    "f1": 0.3664552501761804,
+    "predicted_benign_share": 0.5406958187041174
+   },
+   "Recon-OSScan": {
+    "support": 2320,
+    "precision": 0.14560770156438027,
+    "recall": 0.052155172413793104,
+    "f1": 0.07680101555061886,
+    "predicted_benign_share": 0.7581896551724138
+   },
+   "Recon-PingSweep": {
+    "support": 51,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "predicted_benign_share": 0.803921568627451
+   },
+   "Recon-PortScan": {
+    "support": 1984,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "predicted_benign_share": 0.6915322580645161
+   },
+   "SqlInjection": {
+    "support": 137,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "predicted_benign_share": 0.781021897810219
+   },
+   "Uploading_Attack": {
+    "support": 33,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "predicted_benign_share": 0.8484848484848485
+   },
+   "VulnerabilityScan": {
+    "support": 872,
+    "precision": 0.4323342415985468,
+    "recall": 0.5458715596330275,
+    "f1": 0.48251393816523064,
+    "predicted_benign_share": 0.0
+   },
+   "XSS": {
+    "support": 98,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "predicted_benign_share": 0.9183673469387755
+   }
+  },
+  "roc_auc_macro_ovr": 0.994457871237681,
+  "roc_auc_micro": 0.9977797834235941
+ }
+}

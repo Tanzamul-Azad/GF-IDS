@@ -9,7 +9,7 @@ import numpy as np, pandas as pd, os
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder, MinMaxScaler
 
-SRC = r"F:\UIU\11th\green\datasets\UNSW-NB15\UNSW_NB15_testing-set.csv"
+SRC = os.environ.get("GFIDS_UNSW_CSV", "./raw/UNSW-NB15/UNSW_NB15_testing-set.csv")
 OUT = "./data_unsw/"
 os.makedirs(OUT, exist_ok=True)
 d = pd.read_csv(SRC).drop(columns=["id", "label"]).drop_duplicates()

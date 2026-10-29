@@ -20,7 +20,7 @@ import torch
 
 from models import MODEL_REGISTRY
 
-NAMES = {"BNN-MATCHED": "BNN-FL (ours)", "MLP-TWIN": "FP32-Twin",
+NAMES = {"BNN-MATCHED": "GF-IDS (ours)", "MLP-TWIN": "FP32-Twin",
          "MLP": "MLP-FL", "MLP-INT8": "MLP-INT8",
          "BNN-INT8IO-MATCHED": "BNN-INT8IO", "CNN": "CNN-FL",
          "LSTM": "LSTM-FL", "BNN-FULL-MATCHED": "BNN-Full"}
@@ -230,9 +230,9 @@ def tex_cost(groups_by_ds, out, dims):
 
 
 def tex_controls(groups, out, ds):
-    rows = [("BNN-MATCHED", "base", "BNN-FL (ours)"),
+    rows = [("BNN-MATCHED", "base", "GF-IDS (ours)"),
             ("MLP-TWIN", "base", "FP32-Twin"),
-            ("BNN-MATCHED", "latent_broadcast", "BNN-FL, no projection"),
+            ("BNN-MATCHED", "latent_broadcast", "GF-IDS, no projection"),
             ("BNN-INT8IO-MATCHED", "base", "BNN-INT8IO"),
             ("BNN-FULL-MATCHED", "base", "BNN-Full")]
     lines = ["\\begin{tabular}{@{}lrrrr@{}}", "\\toprule",

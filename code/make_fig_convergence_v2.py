@@ -21,7 +21,7 @@ COL2 = 7.16
 # Fixed categorical order from the paper's validated palette
 # (adjacent CVD dE >= 9.6, normal-vision dE >= 18.7 on white).
 MODELS = [  # key, label, colour, dash, marker
-    ("BNN-MATCHED", "BNN-FL (ours)", "#D55E00", "-", "o"),
+    ("BNN-MATCHED", "GF-IDS (ours)", "#D55E00", "-", "o"),
     ("MLP-TWIN", "FP32-Twin", "#009E73", (0, (4, 1.5)), "D"),
     ("MLP", "MLP-FL", "#0072B2", "--", "s"),
     ("MLP-INT8", "MLP-INT8", "#CC79A7", (0, (1, 1)), "v"),

@@ -13,7 +13,7 @@ import os
 import re
 
 NUM = re.compile(r"-?\d[\d,]*\.?\d*")
-COMPRESSED = ("BNN-FL (ours)", "MLP-INT8", "BNN-INT8IO")
+COMPRESSED = ("GF-IDS (ours)", "MLP-INT8", "BNN-INT8IO")
 
 # file: {column index: "max" | "min"}
 SPECS = {

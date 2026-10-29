@@ -9,7 +9,7 @@ Output: ./data_nfton/ (same layout as ./data/).
 """
 import numpy as np, pandas as pd, os
 from sklearn.preprocessing import LabelEncoder, MinMaxScaler
-D = r"F:\UIU\11th\green\datasets\NF-ToN-IoT-v2" + "\\"
+D = os.environ.get("GFIDS_NFTON_RAW", "./raw/NF-ToN-IoT-v2")
 OUT = "./data_nfton/"; os.makedirs(OUT, exist_ok=True)
 DROP = ["IPV4_SRC_ADDR", "IPV4_DST_ADDR", "L4_SRC_PORT", "Label"]
 
@@ -19,11 +19,11 @@ def sample(path, n_target, seed):
         total += len(ch); parts.append(ch)
         if len(parts) % 1 == 0: parts[-1] = ch.sample(frac=0.12, random_state=rng.randint(1e9))
     df = pd.concat(parts).drop(columns=DROP).drop_duplicates()
-    print(path.split("\\")[-1], "rows scanned", total, "kept", len(df))
+    print(os.path.basename(path), "rows scanned", total, "kept", len(df))
     return df.sample(n=min(n_target, len(df)), random_state=seed)
 
-tr = sample(D + "NF-ToN-IoT-v2-train.csv", 1_000_000, 42)
-te = sample(D + "NF-ToN-IoT-v2-test.csv", 250_000, 43)
+tr = sample(os.path.join(D, "NF-ToN-IoT-v2-train.csv"), 1_000_000, 42)
+te = sample(os.path.join(D, "NF-ToN-IoT-v2-test.csv"), 250_000, 43)
 enc = LabelEncoder().fit(tr["Attack"]); names = list(enc.classes_)
 y_tr, y_te = enc.transform(tr["Attack"]), enc.transform(te["Attack"])
 X_tr, X_te = tr.drop(columns=["Attack"]).astype(np.float64), te.drop(columns=["Attack"]).astype(np.float64)

@@ -167,7 +167,7 @@ def local_train(model, X, y, idx, epochs, bs, opt, crit, gen,
 
 
 @torch.no_grad()
-def validate(model, X, y, idx, crit, C, b_idx, bs=16384):
+def validate(model, X, y, idx, crit, C, b_idx, bs=4096):
     model.eval()
     preds, loss = [], 0.0
     for s in range(0, len(idx), bs):

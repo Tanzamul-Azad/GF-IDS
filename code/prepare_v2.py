@@ -28,9 +28,11 @@ import os
 import numpy as np
 import pandas as pd
 
+# Folders with the raw downloads. Set GFIDS_CIC_RAW and GFIDS_NFTON_RAW,
+# or pass --raw. README.md lists what each folder must contain.
 RAW = {
-    "cic": r"F:\UIU\11th\green\CICIOT23",
-    "nfton": r"F:\UIU\11th\green\datasets\NF-ToN-IoT-v2",
+    "cic": os.environ.get("GFIDS_CIC_RAW", "./ciciot2023/CICIOT23"),
+    "nfton": os.environ.get("GFIDS_NFTON_RAW", "./raw/NF-ToN-IoT-v2"),
 }
 V1_DIR = {"cic": "./data/", "nfton": "./data_nfton/"}
 OUT_DIR = {"cic": "./data_v2/cic/", "nfton": "./data_v2/nfton/"}
@@ -220,4 +222,8 @@ def prepare_nfton():
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("--dataset", required=True, choices=["cic", "nfton"])
-    {"cic": prepare_cic, "nfton": prepare_nfton}[ap.parse_args().dataset]()
+    ap.add_argument("--raw", default=None, help="folder with the raw download")
+    args = ap.parse_args()
+    if args.raw:
+        RAW[args.dataset] = args.raw
+    {"cic": prepare_cic, "nfton": prepare_nfton}[args.dataset]()

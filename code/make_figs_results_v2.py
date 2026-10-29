@@ -57,7 +57,7 @@ def perclass(out):
     x = np.arange(len(classes))
     w = 0.38
     fig, ax = plt.subplots(figsize=(COL2, 2.6))
-    ax.bar(x - w / 2 - 0.01, fb.mean(0), w, color=BNN, label="BNN-FL (ours)",
+    ax.bar(x - w / 2 - 0.01, fb.mean(0), w, color=BNN, label="GF-IDS (ours)",
            yerr=fb.std(0, ddof=1), error_kw={"elinewidth": 0.5, "capsize": 0})
     ax.bar(x + w / 2 + 0.01, ft.mean(0), w, color=TWIN, label="FP32-Twin",
            hatch="////", edgecolor="white", linewidth=0,
@@ -127,7 +127,7 @@ def flips(out):
     print("wrote", path)
 
 
-LABEL = {"BNN-MATCHED": "BNN-FL (ours)", "MLP-TWIN": "FP32-Twin",
+LABEL = {"BNN-MATCHED": "GF-IDS (ours)", "MLP-TWIN": "FP32-Twin",
          "MLP": "MLP-FL", "MLP-INT8": "MLP-INT8",
          "BNN-INT8IO-MATCHED": "BNN-INT8IO", "CNN": "CNN-FL",
          "LSTM": "LSTM-FL", "BNN-FULL-MATCHED": "BNN-Full"}

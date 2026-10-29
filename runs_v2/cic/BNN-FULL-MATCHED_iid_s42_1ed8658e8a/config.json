@@ -1,0 +1,63 @@
+{
+ "run_id": "BNN-FULL-MATCHED_iid_s42_1ed8658e8a",
+ "config": {
+  "dataset": "cic",
+  "model": "BNN-FULL-MATCHED",
+  "seed": 42,
+  "split_seed": 42,
+  "clients": 5,
+  "rounds": 45,
+  "epochs": 5,
+  "batch_size": 256,
+  "lr": 0.0005,
+  "lr_decay": 1.0,
+  "lr_min": 1e-06,
+  "val_fraction": 0.2,
+  "partition": "iid",
+  "alpha": null,
+  "aggregator": "fedavg",
+  "mu": 0.01,
+  "server_lr": 1.0,
+  "init_broadcast": "float",
+  "class_weight": "none",
+  "data_sha256": {
+   "X_train.npy": "8460cdb673071fff919ba099c0f532990a9949ebbcba0b5d9a84ad7b4dc48e64",
+   "y_train.npy": "df6fe7662be7753dadd1719cc26d83fb15cd0755095acb8c88d5babcc0a07287"
+  }
+ },
+ "code_sha256": {
+  "fl_v2.py": "60a0a532d0f7751dfc01a200c03229ba0b9365750c38b0449c835d6f28c25879",
+  "codec.py": "955184e5ce34be4551444ad9b9881692bf1deaf8bc733838c0e4f7f9e4c69efc",
+  "models.py": "e650c8f660bc57dfee1d4563c9e84b056335d19510749c6404acd3d729b32caf",
+  "binary_ops.py": "7ca7de205f88600176e87c89b9950ae4186abde4bf682183f781c9575e30342a",
+  "quant_ops.py": "314a16b3942b7efbe9339ade097fac1dee4da1745a5c6c2bf1b4f46240eb1345",
+  "edgepop_ops.py": "a2b77d2c69c433cc9e58d15ad793a57d22a0b4d50298dc5a73e301d1ae666647",
+  "metrics_v2.py": "184d43fcbd8a87f223367e33dd4fd6e962a3ed63c9a8393cbf07fa4b3db5ae4c"
+ },
+ "torch": "2.6.0+cu124",
+ "python": "3.13.7",
+ "device": "NVIDIA GeForce RTX 4060",
+ "client_train_sizes": [
+  857184,
+  857184,
+  857184,
+  857184,
+  857184
+ ],
+ "client_val_sizes": [
+  214297,
+  214297,
+  214297,
+  214297,
+  214297
+ ],
+ "client_classes_present": [
+  34,
+  34,
+  34,
+  34,
+  34
+ ],
+ "initial_broadcast_bytes": 63752,
+ "selection_rule": "max pooled validation macro F1; earliest round on ties"
+}
