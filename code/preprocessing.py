@@ -23,7 +23,7 @@ import pandas as pd
 from sklearn.preprocessing import LabelEncoder, MinMaxScaler
 
 # ── Configuration ────────────────────────────────────────────
-DATA_ROOT = "./ciciot2023/CICIOT23/"          # extracted dataset
+DATA_ROOT = os.environ.get("GFIDS_CIC_RAW", "./ciciot2023/CICIOT23/")
 OUT_DIR = "./data/"                            # where .npy files land
 CORR_THRESHOLD = 0.80                          # Pearson |r| pruning threshold
 

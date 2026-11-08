@@ -92,10 +92,14 @@ def readiness(r, ds):
 
 def cost_breakdown(model_name, d, C):
     """Operation counts split by precision and the arithmetic energy proxy
-    (45 nm, Horowitz): a Float32 operation counted by thop is priced as a
-    4.6 pJ MAC, a signed addition in a binary layer fed by real values as
-    a 0.9 pJ Float32 addition, an 8-bit MAC at 0.23 pJ, and a binary term
-    (or, with int8 I/O, an 8-bit addition) at 0.03 pJ."""
+    (45 nm, Horowitz primitives plus explicit modelling assumptions): a
+    Float32 operation counted by thop is priced as a 4.6 pJ MAC equivalent,
+    a real-fed signed addition as a 0.9 pJ Float32 addition, and an 8-bit
+    MAC at 0.23 pJ. Binary terms use the 0.03 pJ *8-bit addition* price as
+    a proxy; Horowitz does not report that as a one-bit XNOR-popcount cost.
+    INT8 estimates assume an integer datapath not executed by this code.
+    These assumptions preserve the archived estimates; they are not hardware
+    measurements or a packed-kernel cost model."""
     from thop import profile
     from binary_ops import BinaryLinear
     from quant_ops import QuantLinear

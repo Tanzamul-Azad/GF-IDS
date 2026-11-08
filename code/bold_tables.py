@@ -39,7 +39,11 @@ def value(cell):
 
 def best_rows(rows, col, mode, allowed=None):
     vals = [(i, value(r[col])) for i, r in enumerate(rows)
-            if col < len(r) and (allowed is None or allowed(r))]
+            if col < len(r)
+            # A spanning cell changes the relationship between split('&')
+            # indices and logical columns (e.g. readiness 'not reached').
+            and not any("multicolumn" in cell for cell in r)
+            and (allowed is None or allowed(r))]
     vals = [(i, v) for i, v in vals if v is not None]
     if len(vals) < 2:
         return set()
