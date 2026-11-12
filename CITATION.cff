@@ -5,7 +5,7 @@ type: software
 authors:
   - family-names: "Azad"
     given-names: "Md. Tanzamul"
-repository-code: "https://github.com/Tanjamul-Azad/GF-IDS"
+repository-code: "https://github.com/Tanzamul-Azad/GF-IDS"
 license: MIT
 keywords:
   - federated learning
