@@ -1,6 +1,6 @@
 # Resume all protocol-v2 work after any stop (crash, restart, power cut).
 #
-#   powershell -NoProfile -ExecutionPolicy Bypass -File F:\UIU\11th\green\GFIDS_BNN\resume_v2.ps1
+#   powershell -NoProfile -ExecutionPolicy Bypass -File .\resume_v2.ps1
 #
 # Safe to run at any time:
 #   * finished runs are skipped (done.json);

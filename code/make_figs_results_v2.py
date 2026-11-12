@@ -48,6 +48,23 @@ def runs(ds, model):
     return out
 
 
+# Shortened tick labels used in the paper (Frag. = Fragmentation,
+# SynIP = SynonymousIP, flood suffixes dropped; see Section V-C).
+SHORT = {
+    "DDoS-ICMP_Flood": "DDoS-ICMP", "DDoS-UDP_Flood": "DDoS-UDP",
+    "DDoS-TCP_Flood": "DDoS-TCP", "DDoS-PSHACK_Flood": "DDoS-PSHACK",
+    "DDoS-SYN_Flood": "DDoS-SYN", "DDoS-RSTFINFlood": "DDoS-RSTFIN",
+    "DDoS-SynonymousIP_Flood": "DDoS-SynIP", "DoS-UDP_Flood": "DoS-UDP",
+    "DoS-TCP_Flood": "DoS-TCP", "DoS-SYN_Flood": "DoS-SYN",
+    "Mirai-greeth_flood": "Mirai-greeth", "Mirai-greip_flood": "Mirai-greip",
+    "DDoS-ICMP_Fragmentation": "DDoS-ICMP-Frag.",
+    "DDoS-UDP_Fragmentation": "DDoS-UDP-Frag.",
+    "DDoS-ACK_Fragmentation": "DDoS-ACK-Frag.",
+    "Recon-HostDiscovery": "Recon-HostDisc.", "DoS-HTTP_Flood": "DoS-HTTP",
+    "DDoS-HTTP_Flood": "DDoS-HTTP", "DictionaryBruteForce": "Dict-BruteForce",
+}
+
+
 def perclass(out):
     b = [r["best/holdout"]["per_class"] for r, _ in runs("cic", "BNN-MATCHED")]
     t = [r["best/holdout"]["per_class"] for r, _ in runs("cic", "MLP-TWIN")]
@@ -56,14 +73,15 @@ def perclass(out):
     ft = np.array([[x[c]["f1"] for c in classes] for x in t])
     x = np.arange(len(classes))
     w = 0.38
-    fig, ax = plt.subplots(figsize=(COL2, 2.6))
+    fig, ax = plt.subplots(figsize=(COL2, 2.35))
     ax.bar(x - w / 2 - 0.01, fb.mean(0), w, color=BNN, label="GF-IDS (ours)",
            yerr=fb.std(0, ddof=1), error_kw={"elinewidth": 0.5, "capsize": 0})
     ax.bar(x + w / 2 + 0.01, ft.mean(0), w, color=TWIN, label="FP32-Twin",
            hatch="////", edgecolor="white", linewidth=0,
            yerr=ft.std(0, ddof=1), error_kw={"elinewidth": 0.5, "capsize": 0})
     ax.set_xticks(x)
-    ax.set_xticklabels([f"{c} ({b[0][c]['support']:,})" for c in classes],
+    ax.set_xticklabels([f"{SHORT.get(c, c)} ({b[0][c]['support']:,})"
+                        for c in classes],
                        rotation=65, ha="right")
     ax.set_ylabel("Holdout F1")
     ax.set_ylim(0, 1.2)
@@ -85,7 +103,8 @@ def perclass(out):
                 f"{len(idx)} {name}\nmean F1 {fb.mean(0)[g].mean():.2f} vs "
                 f"{ft.mean(0)[g].mean():.2f}",
                 ha="center", va="center", fontsize=6.2, linespacing=1.15)
-    ax.legend(loc="lower center", bbox_to_anchor=(0.5, 1.0), ncol=2)
+    # Legend inside the empty upper part of the small-class region.
+    ax.legend(loc="upper right", bbox_to_anchor=(0.995, 0.85), ncol=1)
     path = os.path.join(out, "fig_perclass_v2.pdf")
     fig.savefig(path, facecolor="white")
     fig.savefig(path.replace(".pdf", ".png"), facecolor="white", dpi=200)

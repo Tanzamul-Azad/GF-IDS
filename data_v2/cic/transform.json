@@ -1,9 +1,9 @@
 {
  "dataset": "CICIoT2023",
- "train_source": "F:\\UIU\\11th\\green\\CICIOT23\\train\\train.csv",
+ "train_source": "CICIOT23/train/train.csv",
  "train_sha256": "ede08dc57e57369fcf35a2b1ea81b81bad0a9a2ad91bc08eceb646bd89117b04",
  "train_valid_rows": 5491971,
- "holdout_source": "F:\\UIU\\11th\\green\\CICIOT23\\validation\\validation.csv",
+ "holdout_source": "CICIOT23/validation/validation.csv",
  "holdout_sha256": "b13775e87ef64c8dd66c910d4585323f99b1209f2508c75a0a0a8d584caf20d8",
  "holdout_rows_raw": 1176851,
  "holdout_rows_after_nan_inf": 1176851,

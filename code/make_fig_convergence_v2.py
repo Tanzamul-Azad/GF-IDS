@@ -61,7 +61,7 @@ def main():
     ap.add_argument("--out", required=True)
     a = ap.parse_args()
     fig, axes = plt.subplots(1, 2, figsize=(COL2, 2.35), sharex=True)
-    for ax, (ds, title) in zip(axes, DATASETS):
+    for i, (ax, (ds, title)) in enumerate(zip(axes, DATASETS)):
         for key, label, col, dash, mk in MODELS:
             c = curves(ds, key)
             if len(c) == 0:
@@ -74,8 +74,10 @@ def main():
                     markevery=6, markersize=3.6, markeredgecolor="white",
                     markeredgewidth=0.6, linewidth=1.9 if ours else 1.1,
                     zorder=5 if ours else 3, label=f"{label} ({len(c)} seeds)")
-        ax.set_title(title)
         ax.set_xlabel("Communication round")
+        # Panel label under the axis; the shared legend sits above.
+        ax.text(0.5, -0.33, f"({'ab'[i]}) {title}", transform=ax.transAxes,
+                ha="center", va="top", fontsize=7.5)
         ax.set_xlim(1, 45)
     axes[0].set_ylabel("Validation accuracy (%)")
     axes[0].set_ylim(50, 100)
@@ -83,7 +85,7 @@ def main():
     handles, labels = axes[0].get_legend_handles_labels()
     fig.legend(handles, labels, loc="upper center", ncol=4,
                bbox_to_anchor=(0.5, 1.06))
-    fig.tight_layout(w_pad=1.2)
+    fig.tight_layout(w_pad=1.2, rect=(0, 0.06, 1, 1))
     os.makedirs(a.out, exist_ok=True)
     path = os.path.join(a.out, "fig_convergence_v2.pdf")
     fig.savefig(path, facecolor="white")

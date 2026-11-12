@@ -1,8 +1,8 @@
 {
  "dataset": "NF-ToN-IoT-v2",
- "train_source": "F:\\UIU\\11th\\green\\datasets\\NF-ToN-IoT-v2\\NF-ToN-IoT-v2-train.csv",
+ "train_source": "datasets/NF-ToN-IoT-v2/NF-ToN-IoT-v2-train.csv",
  "train_sha256": "d33bb12dcb60627c2745152dd1f7bf110227711735b7080602c39cbf3ac8e004",
- "holdout_source": "F:\\UIU\\11th\\green\\datasets\\NF-ToN-IoT-v2\\NF-ToN-IoT-v2-test.csv",
+ "holdout_source": "datasets/NF-ToN-IoT-v2/NF-ToN-IoT-v2-test.csv",
  "holdout_sha256": "806b685cb7912aa1d8d99a05952d4fedea92217f1d49a007a78438a3b515f2a9",
  "test_rows_scanned": 3388100,
  "v1_test_rows_excluded": 406572,

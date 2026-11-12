@@ -1,7 +1,7 @@
 # Second dataset (NF-ToN-IoT-v2, 10 classes), all six paper models, seeds 42/43/44, IID, T=45.
 # Runs are small (44,756 training records) so this finishes in a few hours even beside the main queue.
 $ErrorActionPreference = "Continue"
-Set-Location "F:\UIU\11th\green\GFIDS_BNN"
+Set-Location $PSScriptRoot
 $env:PYTHONUNBUFFERED = "1"; $env:GFIDS_DATASET = "nfton"
 New-Item -ItemType Directory -Force -Path "logs\nfton","runs_nfton" | Out-Null
 $models = @("BNN-MATCHED","MLP","LSTM","CNN","MLP-INT8","BNN-INT8IO")

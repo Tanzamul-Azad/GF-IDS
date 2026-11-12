@@ -2,7 +2,7 @@
 # FedProx-BNN (resume), SignSGD step 0.05 BNN, then evaluate. Resume-safe.
 param([int]$MaxRetries = 3)
 $ErrorActionPreference = "Continue"
-Set-Location "F:\UIU\11th\green\GFIDS_BNN"
+Set-Location $PSScriptRoot
 $env:PYTHONUNBUFFERED = "1"
 function Run-One($m, $agg) {
     $log = "$($m)_$($agg)"; $ok = $false; $try = 0

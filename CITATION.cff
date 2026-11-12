@@ -1,0 +1,14 @@
+cff-version: 1.2.0
+message: "If you use this code or the archived run records, please cite this repository."
+title: "GF-IDS: federated intrusion detection with hybrid binary neural networks"
+type: software
+authors:
+  - family-names: "Azad"
+    given-names: "Md. Tanzamul"
+repository-code: "https://github.com/Tanjamul-Azad/GF-IDS"
+license: MIT
+keywords:
+  - federated learning
+  - intrusion detection
+  - binarized neural networks
+  - Internet of Things

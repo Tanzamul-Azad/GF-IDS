@@ -131,6 +131,7 @@ see [the protocol](documentation/PROTOCOL.md) before reusing any result.
 ## Questions and reuse
 
 Use this repository's issue tracker for code and reproducibility questions.
-Dataset reuse follows the original providers' terms. No software license has
-yet been selected for this repository; confirm permission with the authors
-before redistribution or reuse beyond applicable rights.
+The code is released under the [MIT License](LICENSE). Dataset reuse follows
+the original providers' terms; the datasets are not redistributed here. To cite
+the repository, use the "Cite this repository" button or
+[`CITATION.cff`](CITATION.cff).

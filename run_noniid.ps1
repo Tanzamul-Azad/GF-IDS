@@ -25,7 +25,7 @@
 param([int]$MaxRetries = 3)
 
 $ErrorActionPreference = "Continue"
-Set-Location "F:\UIU\11th\green\GFIDS_BNN"
+Set-Location $PSScriptRoot
 New-Item -ItemType Directory -Force -Path "logs" | Out-Null
 $env:PYTHONUNBUFFERED = "1"
 
