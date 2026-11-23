@@ -1,0 +1,17 @@
+{
+ "train_rows_after_dedup": 5357406,
+ "v1_train_rows": 5357406,
+ "unique_train_keys": 5357406,
+ "holdout": {
+  "rows": 1170554,
+  "seen_rows": 57744,
+  "overlap": 0.04933048795698447,
+  "align_max_diff": 0.0
+ },
+ "dev_test": {
+  "rows": 1170467,
+  "seen_rows": 57847,
+  "overlap": 0.04942215372154875,
+  "align_max_diff": 1.1102230246251565e-16
+ }
+}

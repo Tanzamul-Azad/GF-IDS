@@ -62,7 +62,9 @@ The retained schema has 31 features and 10 classes.
 
 The final holdout samples test-file row indices not selected for the earlier
 development test. Cross-split equality can nevertheless arise after feature
-processing. Full and non-overlap metrics are both reported. Excluding exact
+processing. Full and non-overlap metrics are both reported. For CICIoT2023,
+use the exact raw-value overlap (4.93% of the holdout); see the amendment in
+[PROTOCOL.md](PROTOCOL.md). Excluding exact
 processed-row matches does not create a device- or time-separated evaluation.
 
 ## Preparation

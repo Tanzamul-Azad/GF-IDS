@@ -35,8 +35,9 @@ cleaning, scaling and pruning rules. Transforms are frozen for evaluation.
 - No holdout or development-test data is loaded by `fl_v2.py` during training.
 
 The holdout is evaluated after training. A processed feature/label row can still
-match a training-pool row: approximately 0.46% of the CIC holdout and 42.35% of
-the NF holdout do. Results therefore include the full holdout and a non-overlap
+match a training-pool row: 4.93% of the CIC holdout and 42.35% of the NF
+holdout do. The CIC figure comes from an exact match on the raw CSV values
+(`code/overlap_raw_cic_v2.py`); see the amendment below. Results therefore include the full holdout and a non-overlap
 subset. These row-level splits do not establish generalization to unseen
 devices, sites, time periods or attack campaigns.
 
@@ -88,3 +89,20 @@ python code/check_run_records.py
 This standard-library check validates all 96 completion records, the
 validation selection rule and aggregate summary values. It does not retrain
 models or independently rerun predictions on the raw data.
+
+## Amendment (17 Nov 2026): CIC holdout overlap
+
+An earlier version of this file gave 0.46% for the CIC holdout overlap. That
+mask hashed scaled feature values, and the holdout and the training rows were
+scaled by two routines that differ in the last bits, so repeated rows were
+missed. Matching the raw CSV values instead (`code/overlap_raw_cic_v2.py`,
+summary in `data_v2/cic/overlap_raw.json`) finds 57,744 of 1,170,554 holdout
+rows (4.93%) in the training pool; the development test set stays at 4.94%.
+
+The CIC unseen-row scores were recomputed with the exact mask
+(`code/rescore_unseen_cic_v2.py`). Each CIC run directory now holds
+`results_unseen_raw.json`. Accuracy on unseen rows differs from all-row
+accuracy by at most 0.03 points and macro F1 by at most 0.0005. The non-overlap
+fields in `runs_v2/cic/summary.json` still use the old mask; use
+`results_unseen_raw.json` for CIC. NF-ToN-IoT-v2 is not affected, because its
+training pool and holdout share one fitted scaler.

@@ -1,0 +1,66 @@
+{
+ "old_exact_cache": {
+  "holdout": 0.0045986772075444615,
+  "dev_test": 0.04942215372154875
+ },
+ "decimals=None": {
+  "holdout": {
+   "overlap": 0.0045986772075444615,
+   "rows": 1170554,
+   "seen_rows": 5383
+  },
+  "dev_test": {
+   "overlap": 0.04942215372154875,
+   "rows": 1170467,
+   "seen_rows": 57847
+  }
+ },
+ "decimals=12": {
+  "holdout": {
+   "overlap": 0.06133335155832196,
+   "rows": 1170554,
+   "seen_rows": 71794
+  },
+  "dev_test": {
+   "overlap": 0.06156687886117251,
+   "rows": 1170467,
+   "seen_rows": 72062
+  }
+ },
+ "decimals=10": {
+  "holdout": {
+   "overlap": 0.34122389911101925,
+   "rows": 1170554,
+   "seen_rows": 399421
+  },
+  "dev_test": {
+   "overlap": 0.3405589392951702,
+   "rows": 1170467,
+   "seen_rows": 398613
+  }
+ },
+ "decimals=8": {
+  "holdout": {
+   "overlap": 0.4336143398766738,
+   "rows": 1170554,
+   "seen_rows": 507569
+  },
+  "dev_test": {
+   "overlap": 0.4317567261614381,
+   "rows": 1170467,
+   "seen_rows": 505357
+  }
+ },
+ "decimals=6": {
+  "holdout": {
+   "overlap": 0.6084537748792452,
+   "rows": 1170554,
+   "seen_rows": 712228
+  },
+  "dev_test": {
+   "overlap": 0.6075549332018758,
+   "rows": 1170467,
+   "seen_rows": 711123
+  }
+ }
+}
